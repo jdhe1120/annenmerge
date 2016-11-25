@@ -8,20 +8,26 @@ import {
   Text,
   TouchableOpacity,
   View,
+  AsyncStorage,
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
 import { Facebook } from 'exponent';
 
-export default class HomeScreen extends React.Component {
-  static route = {
-    navigationBar: {
-      visible: false,
-    },
+export default class LogInScreen extends React.Component {
+
+  constructor(props)
+  {
+    super(props);
+    this.state = {loggedIn: false, friendlist: ""};
   }
 
   render() {
-    return (
+
+    if (!this.state.loggedIn)
+    {
+
+        return (
       <View style={styles.container}>
         <ScrollView
           style={styles.container}
@@ -62,37 +68,36 @@ export default class HomeScreen extends React.Component {
           </View>
         </ScrollView>
 
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>
-            This is a tab bar. You can edit it in:
-          </Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>
-              navigation/RootNavigation.js
-            </MonoText>
-          </View>
-        </View>
       </View>
     );
+
+    }
+    else
+    {
+        var jsondata = JSON.parse(this.state.friendlist);
+        var textdata = "";
+        for (var i = 0; i < jsondata.length; i++) {
+            textdata += jsondata[i].name + "\n";
+        }
+
+        return (
+            <View><Text>{textdata}</Text></View>
+        );
+    }
+
+
   }
 
   _signInWithFacebook = async () => {
     const result = await Facebook.logInWithReadPermissionsAsync('1501095743264612', {
-      permissions: ['public_profile'],
+      permissions: ['public_profile', 'email', 'user_friends'],
       behavior: Platform.OS === 'ios' ? 'web' : 'system',
     });
 
     if (result.type === 'success') {
-      let response = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
+      let response = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
       let info = await response.json();
-
-      this.props.dispatch(Actions.signIn(new User({
-        id: info.id,
-        authToken: result.token,
-        name: info.name,
-        isGuest: false,
-      })));
+      this.setState({loggedIn: true, friendlist: JSON.stringify(info.data)});
     }
   }
 
