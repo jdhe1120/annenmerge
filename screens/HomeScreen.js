@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
+import { Facebook } from 'exponent';
 
 export default class HomeScreen extends React.Component {
   static route = {
@@ -53,9 +54,9 @@ export default class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>
-                Help, it didn’t automatically reload!
+            <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
+              <Text>
+                Login with Facebook
               </Text>
             </TouchableOpacity>
           </View>
@@ -74,6 +75,25 @@ export default class HomeScreen extends React.Component {
         </View>
       </View>
     );
+  }
+
+  _signInWithFacebook = async () => {
+    const result = await Facebook.logInWithReadPermissionsAsync('1501095743264612', {
+      permissions: ['public_profile'],
+      behavior: Platform.OS === 'ios' ? 'web' : 'system',
+    });
+
+    if (result.type === 'success') {
+      let response = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
+      let info = await response.json();
+
+      this.props.dispatch(Actions.signIn(new User({
+        id: info.id,
+        authToken: result.token,
+        name: info.name,
+        isGuest: false,
+      })));
+    }
   }
 
   _maybeRenderDevelopmentModeWarning() {
