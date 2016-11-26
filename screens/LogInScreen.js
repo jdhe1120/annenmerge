@@ -37,12 +37,6 @@ export default class LogInScreen extends React.Component {
 
     if (!this.state.loggedIn)
     {
-      var userId = "1812182989070127"
-
-      firebase.database().ref('users/' + userId).set({
-        name: "Alina Hanaj",
-        tablenumber: "C9"
-      });
 
         return (
       <View style={styles.container}>
@@ -129,9 +123,10 @@ export default class LogInScreen extends React.Component {
       let nameinfo = await responsetwo.json();
 
       try {
-        await AsyncStorage.setItem('sessionid', nameinfo.id);
+        await AsyncStorage.setItem('sessionid', JSON.stringify(nameinfo));
+        console.log("success storing session id");
       } catch (error) {
-        console.log("error saving session id")
+        console.log("error saving session id");
       }
 
     }
