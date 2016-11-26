@@ -13,19 +13,36 @@ import {
 
 import { MonoText } from '../components/StyledText';
 import { Facebook } from 'exponent';
+import * as firebase from 'firebase';
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: " ***REMOVED***",
+  authDomain: "annenmerge-94bee.firebaseapp.com",
+  databaseURL: "https://annenmerge-94bee.firebaseio.com/",
+  storageBucket: "gs://annenmerge-94bee.appspot.com",
+};
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 export default class LogInScreen extends React.Component {
 
   constructor(props)
   {
     super(props);
-    this.state = {loggedIn: false, friendlist: ""};
+    this.state = {loggedIn: false, friendlist: "", tablelist: ""};
   }
 
   render() {
 
     if (!this.state.loggedIn)
     {
+      var userId = "1812182989070127"
+
+      firebase.database().ref('users/' + userId).set({
+        name: "Alina Hanaj",
+        tablenumber: "C9"
+      });
 
         return (
       <View style={styles.container}>
@@ -78,11 +95,20 @@ export default class LogInScreen extends React.Component {
         var textdata = "";
         for (var i = 0; i < jsondata.length; i++) {
             textdata += jsondata[i].name + "\n";
+            firebase.database().ref('users/' + jsondata[i].id).on('value', function(snapshot) {
+              var tablenumber = snapshot.val().tablenumber;
+              console.log(tablenumber);
+            });
         }
 
         return (
-            <View><Text>{textdata}</Text></View>
+            <View>
+              <Text>
+                {textdata}
+              </Text>
+            </View>
         );
+
     }
 
 
@@ -95,11 +121,23 @@ export default class LogInScreen extends React.Component {
     });
 
     if (result.type === 'success') {
-      let response = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
-      let info = await response.json();
-      this.setState({loggedIn: true, friendlist: JSON.stringify(info.data)});
+      let responseone = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
+      let friendinfo = await responseone.json();
+      this.setState({loggedIn: true, friendlist: JSON.stringify(friendinfo.data)});
+
+      let responsetwo = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
+      let nameinfo = await responsetwo.json();
+
+      try {
+        await AsyncStorage.setItem('sessionid', nameinfo.id);
+      } catch (error) {
+        console.log("error saving session id")
+      }
+
     }
   }
+
+
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
