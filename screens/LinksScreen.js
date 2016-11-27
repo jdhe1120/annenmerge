@@ -44,7 +44,7 @@ export default class LinksScreen extends React.Component {
   }
   static route = {
     navigationBar: {
-      title: 'Links',
+      title: 'Check In',
     },
   }
 
