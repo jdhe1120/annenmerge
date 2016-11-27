@@ -9,15 +9,17 @@ import {
   TouchableOpacity,
   View,
   AsyncStorage,
+  ListView,
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
 import { Facebook } from 'exponent';
+import PubSub from 'pubsub-js';
 import * as firebase from 'firebase';
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: " AIzaSyBVCsUK3xA81qn8EB4NMinFqx_jupxJ_Og",
+  apiKey: "AIzaSyBVCsUK3xA81qn8EB4NMinFqx_jupxJ_Og",
   authDomain: "annenmerge-94bee.firebaseapp.com",
   databaseURL: "https://annenmerge-94bee.firebaseio.com/",
   storageBucket: "gs://annenmerge-94bee.appspot.com",
@@ -30,14 +32,31 @@ export default class LogInScreen extends React.Component {
   constructor(props)
   {
     super(props);
-    this.state = {loggedIn: false, friendlist: "", tablelist: ""};
+
+    this.ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
+    this.state = {
+      loggedIn: false,
+      friendlist: "",
+      arrayversion: {},
+      dataSource: this.ds.cloneWithRows(['row 1', 'row 2']),
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.loggedIn !== this.state.loggedIn)
+    {
+      console.log("test");
+      return true;
+    }
+    else {
+      return JSON.stringify(nextState.dataSource) !== JSON.stringify(this.state.dataSource);
+    }
   }
 
   render() {
 
     if (!this.state.loggedIn)
     {
-
         return (
       <View style={styles.container}>
         <ScrollView
@@ -56,7 +75,7 @@ export default class LogInScreen extends React.Component {
             {this._maybeRenderDevelopmentModeWarning()}
 
             <Text style={styles.getStartedText}>
-              Get started by opening
+              Get started by opening -- testing
             </Text>
 
             <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
@@ -85,22 +104,40 @@ export default class LogInScreen extends React.Component {
     }
     else
     {
+        console.log("is this being run too much?");
         var jsondata = JSON.parse(this.state.friendlist);
-        var textdata = "";
-        for (var i = 0; i < jsondata.length; i++) {
-            textdata += jsondata[i].name + "\n";
-            firebase.database().ref('users/' + jsondata[i].id).on('value', function(snapshot) {
-              var tablenumber = snapshot.val().tablenumber;
-              console.log(tablenumber);
-            });
-        }
+
+        var that = this;
+
+        for (var i = 0; i < jsondata.length; i++)
+        {
+
+        var userId = jsondata[i].id;
+
+        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+          var tablenumber = snapshot.val().tablenumber;
+          var name = snapshot.val().name;
+          var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
+          temp[name] = tablenumber;
+
+          var temparray = [];
+
+            for(var x in temp){
+              temparray.push(x + " " + temp[x]);
+            }
+
+            that.setState({arrayversion: temp, dataSource: that.ds.cloneWithRows(temparray)});
+        });
+
+      }
+
 
         return (
-            <View>
-              <Text>
-                {textdata}
-              </Text>
-            </View>
+          <ListView
+      style={styles.container}
+      dataSource={this.state.dataSource}
+      renderRow={(data) => <View><Text>{data}</Text></View>}
+          />
         );
 
     }
@@ -115,6 +152,17 @@ export default class LogInScreen extends React.Component {
     });
 
     if (result.type === 'success') {
+      PubSub.publish('loggedin', true);
+
+      // Build Firebase credential with the Facebook access token.
+      var credential = firebase.auth.FacebookAuthProvider.credential(result.token);
+
+      // Sign in with credential from the Facebook user.
+      firebase.auth().signInWithCredential(credential).catch(function(error) {
+            // Handle Errors here.
+            console.log("error signing into Firebase");
+      });
+
       let responseone = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
       let friendinfo = await responseone.json();
       this.setState({loggedIn: true, friendlist: JSON.stringify(friendinfo.data)});
@@ -128,6 +176,7 @@ export default class LogInScreen extends React.Component {
       } catch (error) {
         console.log("error saving session id");
       }
+
 
     }
   }
