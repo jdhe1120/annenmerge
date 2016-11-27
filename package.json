@@ -20,7 +20,7 @@
     "react-native": "git+https://github.com/exponentjs/react-native#sdk-11.0.3",
     "react-native-button": "^1.7.1",
     "react-native-form": "^2.1.1",
-    "node-internal-pubsub": "1.0.1"
+    "pubsub-js": "1.0.1"
   },
   "devDependencies": {
     "jest-exponent": "~0.1.3"
