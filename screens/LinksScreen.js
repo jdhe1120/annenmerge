@@ -7,12 +7,15 @@ import {
   StyleSheet,
   TextInput,
   AsyncStorage,
+  TouchableOpacity,
 } from 'react-native';
 import {
   ExponentLinksView,
 } from '@exponent/samples';
 
 import * as firebase from 'firebase';
+import { Facebook } from 'exponent';
+import PubSub from 'pubsub-js';
 
 export default class LinksScreen extends React.Component {
   constructor(props) {
@@ -50,7 +53,7 @@ export default class LinksScreen extends React.Component {
 
   render() {
     return (
-
+      <View>
       <View><TextInput
         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
         onChangeText={(text) => this.setState({text})}
@@ -65,8 +68,33 @@ export default class LinksScreen extends React.Component {
       </Button>
       </View>
 
+      <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+          <Text>
+            Logout with Facebook
+          </Text>
+        </TouchableOpacity>
+
+
+      </View>
+
     );
   }
+
+  _logOutWithFacebook = async () => {
+
+      try {
+        await AsyncStorage.removeItem('sessionid');
+        console.log("success deleting sessionid");
+      } catch (error) {
+        console.log("error deleting session id");
+      }
+
+      this.props.navigator.replace('logIn');
+      // this.props.navigator.pop('links');
+      // this.setState({loggedIn: false});
+      PubSub.publish('loggedin', false);
+    }
+
 
 }
 

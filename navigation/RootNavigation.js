@@ -51,7 +51,12 @@ export default class RootNavigation extends React.Component {
       {
           console.log("this is happening 100 times");
           that.setState({visibility: true});
-          PubSub.unsubscribe(token);
+          // PubSub.unsubscribe(token);
+      }
+      else
+      {
+        that.setState({visibility: false});
+        console.log("logged out in pub sub");
       }
     }
   	var token = PubSub.subscribe('loggedin', mySubscriber);
@@ -101,10 +106,20 @@ if (this.state.visibility === true)
 	    <TabNavigation
 	      tabBarHeight={0}
 	      initialTab="logIn">
-	      <TabNavigationItem
-	        id="logIn"
-	        >
+        <TabNavigationItem
+	        id="logIn">
 	        <StackNavigation initialRoute="logIn" />
+	      </TabNavigationItem>
+        <TabNavigationItem
+	        id="links"
+	        >
+	        <StackNavigation/>
+	      </TabNavigationItem>
+
+	      <TabNavigationItem
+	        id="settings"
+	        >
+	        <StackNavigation/>
 	      </TabNavigationItem>
 	    </TabNavigation>
 	  );
