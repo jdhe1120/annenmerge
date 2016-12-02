@@ -90,7 +90,7 @@ export default class LinksScreen extends React.Component
 
   render() {
     return (
-
+      <View>
       <View><TextInput
         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
         onChangeText={(text) => this.setState({text})}
@@ -109,6 +109,15 @@ export default class LinksScreen extends React.Component
             Logout with Facebook
           </Text>
         </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+          <Text>
+            Logout with Facebook
+          </Text>
+        </TouchableOpacity>
+
+
       </View>
 
     );
