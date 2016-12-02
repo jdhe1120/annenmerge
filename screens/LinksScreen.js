@@ -68,11 +68,14 @@ export default class LinksScreen extends React.Component
       var tableDigits = parseInt(submitTableNum.substring(1));
       if (tableDigits <= 17)
       {
+
           firebase.database().ref('users/' + userId).set({
           name: jsonnameinfo.name,
           tablenumber: submitTableNum,
+          time: new Date().getTime(),
           });
           // this.props.navigator.replace('logIn');
+          Alert.alert('Your table has been submitted!');
       }
       else
       {
@@ -98,11 +101,14 @@ export default class LinksScreen extends React.Component
         selectTextOnFocus={true}
       />
       <Button
-        style={{fontSize: 20, color: 'green'}}
+        style={{fontSize: 20, color: 'black'}}
         styleDisabled={{color: 'red'}}
         onPress={() => this._handlePress()}>
-        Press Me!
+        Submit
       </Button>
+
+      <Text>
+      </Text>
 
       <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
           <Text>

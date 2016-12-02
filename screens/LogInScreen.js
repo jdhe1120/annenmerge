@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AppRegistry,
   Image,
   Linking,
   Platform,
@@ -10,6 +11,7 @@ import {
   View,
   AsyncStorage,
   ListView,
+  NavigatorIOS,
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
@@ -33,12 +35,12 @@ export default class LogInScreen extends React.Component {
   {
     super(props);
 
-    this.ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
+    this.ds = new ListView.DataSource({rowHasChanged: (Loading) => row1 !== row2});
     this.state = {
       loggedIn: false,
       friendlist: "",
       arrayversion: {},
-      dataSource: this.ds.cloneWithRows(['row 1', 'row 2']),
+      dataSource: this.ds.cloneWithRows(['Loading...']),
     };
   }
 
@@ -78,29 +80,12 @@ export default class LogInScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
 
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={require('../assets/images/exponent-wordmark.png')}
-              style={styles.welcomeImage}
-            />
-          </View>
+
 
 
           <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
             <Text style={styles.getStartedText}>
-              Get started by opening -- testing
-            </Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>
-                screens/HomeScreen.js
-              </MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
+              Welcome to Annenmerge!
             </Text>
           </View>
 
@@ -134,12 +119,13 @@ export default class LogInScreen extends React.Component {
           var tablenumber = snapshot.val().tablenumber;
           var name = snapshot.val().name;
           var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
-          temp[name] = tablenumber;
+          var timedif = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
+          temp[name] = [tablenumber, timedif];
 
           var temparray = [];
 
             for(var x in temp){
-              temparray.push(x + " " + temp[x]);
+              temparray.push(x + " " + temp[x][0] + " - " + temp[x][1] + " hours ago");
             }
 
             that.setState({arrayversion: temp, dataSource: that.ds.cloneWithRows(temparray)});
@@ -149,20 +135,21 @@ export default class LogInScreen extends React.Component {
 
 
         return (
-          // <View>
+
+
+
+          <View style={styles.container}>
+          <Text></Text>
+          <Text></Text>
+
+
             <ListView
-      style={styles.container}
+      style={styles.postsListView}
       dataSource={this.state.dataSource}
       renderRow={(data) => <View><Text>{data}</Text></View>}
-          >
+          />
 
-          <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
-              <Text>
-                Logout with Facebook
-              </Text>
-            </TouchableOpacity>
-
-          </ListView>
+</View>
 
         );
 
@@ -206,19 +193,6 @@ export default class LogInScreen extends React.Component {
 
     }
   }
-
-  _logOutWithFacebook = async () => {
-
-      try {
-        await AsyncStorage.removeItem('sessionid');
-        console.log("success deleting sessionid");
-      } catch (error) {
-        console.log("error deleting session id");
-      }
-
-      this.setState({loggedIn: false});
-      PubSub.publish('loggedin', false);
-    }
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
