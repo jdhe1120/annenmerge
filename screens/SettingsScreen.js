@@ -20,7 +20,7 @@ export default class SettingsScreen extends React.Component {
         style={styles.container}
         contentContainerStyle={this.props.route.getContentContainerStyle()}>
 
-        { /* Go ahead and delete ExponentConfigView and replace it with your
+        { /* Go ahead and ExponentConfigView and replace it with your
            * content, we just wanted to give you a quick view of your config */ }
         <ExponentConfigView />
 
