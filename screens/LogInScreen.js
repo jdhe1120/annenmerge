@@ -43,6 +43,8 @@ export default class LogInScreen extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextState.loggedIn);
+    console.log(this.state.loggedIn);
     if (nextState.loggedIn !== this.state.loggedIn)
     {
       console.log("test");
@@ -54,6 +56,19 @@ export default class LogInScreen extends React.Component {
   }
 
   render() {
+
+    var thattwo = this;
+
+    var mySubscriber = function(msg, data)
+    {
+      if (data !== true)
+      {
+          console.log("#1 this is leading to an erorr!!");
+          thattwo.setState({loggedIn: false});
+        }
+    }
+  	var token = PubSub.subscribe('loggedin', mySubscriber);
+
 
     if (!this.state.loggedIn)
     {
@@ -115,6 +130,7 @@ export default class LogInScreen extends React.Component {
         var userId = jsondata[i].id;
 
         firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+
           var tablenumber = snapshot.val().tablenumber;
           var name = snapshot.val().name;
           var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
@@ -133,11 +149,21 @@ export default class LogInScreen extends React.Component {
 
 
         return (
-          <ListView
+          // <View>
+            <ListView
       style={styles.container}
       dataSource={this.state.dataSource}
       renderRow={(data) => <View><Text>{data}</Text></View>}
-          />
+          >
+
+          <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+              <Text>
+                Logout with Facebook
+              </Text>
+            </TouchableOpacity>
+
+          </ListView>
+
         );
 
     }
@@ -181,7 +207,18 @@ export default class LogInScreen extends React.Component {
     }
   }
 
+  _logOutWithFacebook = async () => {
 
+      try {
+        await AsyncStorage.removeItem('sessionid');
+        console.log("success deleting sessionid");
+      } catch (error) {
+        console.log("error deleting session id");
+      }
+
+      this.setState({loggedIn: false});
+      PubSub.publish('loggedin', false);
+    }
 
   _maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
