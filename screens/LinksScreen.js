@@ -111,13 +111,6 @@ export default class LinksScreen extends React.Component
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
-          <Text>
-            Logout with Facebook
-          </Text>
-        </TouchableOpacity>
-
-
       </View>
 
     );
