@@ -1,5 +1,6 @@
 import React from 'react';
-import {
+import 
+{
   AppRegistry,
   Image,
   Linking,
@@ -19,8 +20,9 @@ import { Facebook } from 'exponent';
 import PubSub from 'pubsub-js';
 import * as firebase from 'firebase';
 
-// Initialize Firebase
-const firebaseConfig = {
+{/* Initialize Firebase */}
+const firebaseConfig = 
+{
   apiKey: "***REMOVED***",
   authDomain: "annenmerge-94bee.firebaseapp.com",
   databaseURL: "https://annenmerge-94bee.firebaseio.com/",
@@ -36,7 +38,8 @@ export default class LogInScreen extends React.Component {
     super(props);
 
     this.ds = new ListView.DataSource({rowHasChanged: (Loading) => row1 !== row2});
-    this.state = {
+    this.state = 
+    {
       loggedIn: false,
       friendlist: "",
       arrayversion: {},
@@ -44,6 +47,7 @@ export default class LogInScreen extends React.Component {
     };
   }
 
+  {/* Updates screen only when data or log-in state changes */}
   shouldComponentUpdate(nextProps, nextState) {
     console.log(nextState.loggedIn);
     console.log(this.state.loggedIn);
@@ -79,10 +83,6 @@ export default class LogInScreen extends React.Component {
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
-
-
-
-
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
               Welcome to Annenmerge!
@@ -109,22 +109,25 @@ export default class LogInScreen extends React.Component {
 
         var that = this;
 
+      { /* Loops over friendlist */}
         for (var i = 0; i < jsondata.length; i++)
         {
 
         var userId = jsondata[i].id;
 
-        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) 
+          {
+            var tablenumber = snapshot.val().tablenumber;
+            var name = snapshot.val().name;
+            var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
+            var timedif = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
+            temp[name] = [tablenumber, timedif];
 
-          var tablenumber = snapshot.val().tablenumber;
-          var name = snapshot.val().name;
-          var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
-          var timedif = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
-          temp[name] = [tablenumber, timedif];
+            var temparray = [];
 
-          var temparray = [];
-
-            for(var x in temp){
+            {/* Creates row of data for each friend */}
+            for(var x in temp)
+            {
               temparray.push(x + " " + temp[x][0] + " - " + temp[x][1] + " hours ago");
             }
 

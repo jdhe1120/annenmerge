@@ -28,6 +28,7 @@ export default class LinksScreen extends React.Component
     this.state = {text: 'Enter table number:'};
   }
 
+  {/* Submits input on press */}
   async _handlePress()
   {
     try
@@ -45,53 +46,58 @@ export default class LinksScreen extends React.Component
       console.log("error getting data");
     }
 
-  var submitTableNum = this.state.text.toUpperCase();
+    var submitTableNum = this.state.text.toUpperCase();
 
-  var userId = jsonnameinfo.id;
+    var userId = jsonnameinfo.id;
 
-  let length = submitTableNum.length;
-  if (length < 2 || length > 3)
-  {
-    console.log("error");
-    Alert.alert('Error', 'Insert a valid table number.');
-    this.setState({text: ''});
-  }
-  else
-  {
-    var tableLetter = submitTableNum[0];
-    if (tableLetter != "A" && tableLetter != "B" && tableLetter != "C")
+    let length = submitTableNum.length;
+
+    { /* Form validation */}
+    if (length < 2 || length > 3)
     {
-      Alert.alert('Error', 'Your table should start with A, B, or C.');
+      Alert.alert('Error', 'Insert a valid table number.');
+      this.setState({text: ''});
     }
     else
     {
-      var tableDigits = parseInt(submitTableNum.substring(1));
-      if (tableDigits <= 17)
+      var tableLetter = submitTableNum[0];
+      if (tableLetter != "A" && tableLetter != "B" && tableLetter != "C")
       {
-
-          firebase.database().ref('users/' + userId).set({
-          name: jsonnameinfo.name,
-          tablenumber: submitTableNum,
-          time: new Date().getTime(),
-          });
-          // this.props.navigator.replace('logIn');
-          Alert.alert('Your table has been submitted!');
+        Alert.alert('Error', 'Your table should start with A, B, or C.');
       }
       else
       {
-        Alert.alert('Error', 'The table number must be between 1 and 17.');
-        this.setState({text: ''});
+        var tableDigits = parseInt(submitTableNum.substring(1));
+
+      {/* Enters a valid table number into Firebase */}
+        if (tableDigits <= 17)
+        {
+
+            firebase.database().ref('users/' + userId).set({
+            name: jsonnameinfo.name,
+            tablenumber: submitTableNum,
+            time: new Date().getTime(),
+            });
+            Alert.alert('Your table has been submitted!');
+        }
+        else
+        {
+          Alert.alert('Error', 'The table number must be between 1 and 17.');
+          this.setState({text: ''});
+        }
       }
     }
   }
-}
-  static route = {
-    navigationBar: {
+  static route = 
+  {
+    navigationBar: 
+    {
       title: 'Check In',
     },
   }
 
-  render() {
+  render() 
+  {
     return (
       <View>
       <View><TextInput
@@ -122,24 +128,27 @@ export default class LinksScreen extends React.Component
     );
   }
 
-  _logOutWithFacebook = async () => {
-
-      try {
+  _logOutWithFacebook = async () => 
+  {
+      try 
+      {
         await AsyncStorage.removeItem('sessionid');
         console.log("success deleting sessionid");
-      } catch (error) {
+      } 
+      catch (error) 
+      {
         console.log("error deleting session id");
       }
-
       this.props.navigator.replace('logIn');
       // this.props.navigator.pop('links');
       // this.setState({loggedIn: false});
       PubSub.publish('loggedin', false);
-    }
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: 
+  {
     flex: 1,
     paddingTop: 15,
   },
