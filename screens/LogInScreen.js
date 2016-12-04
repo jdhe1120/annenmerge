@@ -1,5 +1,5 @@
 import React from 'react';
-import 
+import
 {
   AppRegistry,
   Image,
@@ -21,7 +21,7 @@ import PubSub from 'pubsub-js';
 import * as firebase from 'firebase';
 
 {/* Initialize Firebase */}
-const firebaseConfig = 
+const firebaseConfig =
 {
   apiKey: "***REMOVED***",
   authDomain: "annenmerge-94bee.firebaseapp.com",
@@ -36,129 +36,130 @@ export default class LogInScreen extends React.Component {
   constructor(props)
   {
     super(props);
-
     this.ds = new ListView.DataSource({rowHasChanged: (Loading) => row1 !== row2});
-    this.state = 
+    this.state =
     {
       loggedIn: false,
-      friendlist: "",
-      arrayversion: {},
+      fbfrienddata: "",
+      objectdisplaydata: {},
       dataSource: this.ds.cloneWithRows(['Loading...']),
     };
   }
 
-  {/* Updates screen only when data or log-in state changes */}
+  /* Updates screen if log-in state changes. If log-in state doesn't change, update only when data changes. */
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextState.loggedIn);
-    console.log(this.state.loggedIn);
     if (nextState.loggedIn !== this.state.loggedIn)
     {
-      console.log("test");
+      console.log("update logInScreen component as loggedIn is now " + nextState.loggedIn);
       return true;
     }
-    else {
+    else
+    {
       return JSON.stringify(nextState.dataSource) !== JSON.stringify(this.state.dataSource);
     }
   }
 
   render() {
 
-    var thattwo = this;
+    var logincomp = this;
 
-    var mySubscriber = function(msg, data)
-    {
-      if (data !== true)
-      {
-          console.log("#1 this is leading to an erorr!!");
-          thattwo.setState({loggedIn: false});
-        }
-    }
-  	var token = PubSub.subscribe('loggedin', mySubscriber);
-
+    // var logInSubscriber = function(msg, data)
+    // {
+    //   if (!data)
+    //   {
+    //     console.log("user has now logged out");
+    //     logincomp.setState({loggedIn: false});
+    //   }
+    // }
+  	// var token = PubSub.subscribe('loggedin', logInSubscriber);
 
     if (!this.state.loggedIn)
     {
-        return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}>
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
-              Welcome to Annenmerge!
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
-              <Text>
-                Login with Facebook
+      return (
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}>
+            <View style={styles.getStartedContainer}>
+              <Text style={styles.getStartedText}>
+                Welcome to Annenmerge!
               </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-      </View>
+            </View>
+            <View style={styles.helpContainer}>
+              <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
+                <Text>
+                  Login with Facebook
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
     );
 
     }
     else
     {
-        console.log("is this being run too much?");
-        var jsondata = JSON.parse(this.state.friendlist);
-
-        var that = this;
-
-      { /* Loops over friendlist */}
-        for (var i = 0; i < jsondata.length; i++)
+        var jsonfbdata = JSON.parse(this.state.fbfrienddata);
+        /* Loops over each friend in the friend list */
+        for (var i = 0; i < jsonfbdata.length; i++)
         {
-
-        var userId = jsondata[i].id;
-
-          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) 
+          var userId = jsonfbdata[i].id;
+          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot)
           {
-            var tablenumber = snapshot.val().tablenumber;
-            var name = snapshot.val().name;
-            var temp = JSON.parse(JSON.stringify(that.state.arrayversion));
-            var timedif = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
-            temp[name] = [tablenumber, timedif];
-
-            var temparray = [];
-
-            {/* Creates row of data for each friend */}
-            for(var x in temp)
+            var userId = snapshot.key;
+            var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
+            if (hoursago <= 3)
             {
-              temparray.push(x + " " + temp[x][0] + " - " + temp[x][1] + " hours ago");
+              var tablenumber = snapshot.val().tablenumber;
+              var name = snapshot.val().name;
+              var objectcopy = JSON.parse(JSON.stringify(logincomp.state.objectdisplaydata));
+              objectcopy[userId] = [name, tablenumber, hoursago];
+              var finaldisplaydata = [];
+
+              /* Creates row of data for each friend */
+              for(var x in objectcopy)
+              {
+                finaldisplaydata.push(objectcopy[x][0] + " " + objectcopy[x][1] + " - " + objectcopy[x][2] + " hours ago");
+              }
+
+              logincomp.setState({objectdisplaydata: objectcopy, dataSource: logincomp.ds.cloneWithRows(finaldisplaydata)});
             }
-
-            that.setState({arrayversion: temp, dataSource: that.ds.cloneWithRows(temparray)});
-        });
-
-      }
-
-
+          });
+        }
         return (
-
-
-
           <View style={styles.container}>
-          <Text></Text>
-          <Text></Text>
-
-
+            <Text></Text>
+            <Text></Text>
             <ListView
-      style={styles.postsListView}
-      dataSource={this.state.dataSource}
-      renderRow={(data) => <View><Text>{data}</Text></View>}
-          />
-
-</View>
-
+            style={styles.postsListView}
+            dataSource={this.state.dataSource}
+            renderRow={(data) => <View><Text>{data}</Text></View>}
+            />
+            <View style={styles.helpContainer}>
+              <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+                <Text>
+                  Logout with Facebook
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         );
-
     }
+  }
 
-
+  _logOutWithFacebook = async () =>
+  {
+      try
+      {
+        await AsyncStorage.removeItem('sessionid');
+        console.log("sessionid deleted");
+      }
+      catch (error)
+      {
+        console.log("error deleting session id");
+      }
+      this.setState({loggedIn: false});
+      PubSub.publish('loggedin', false);
   }
 
   _signInWithFacebook = async () => {
@@ -179,21 +180,25 @@ export default class LogInScreen extends React.Component {
             console.log("error signing into Firebase");
       });
 
+      // fetch friend information from facebook
       let responseone = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
       let friendinfo = await responseone.json();
-      this.setState({loggedIn: true, friendlist: JSON.stringify(friendinfo.data)});
+      this.setState({loggedIn: true, fbfrienddata: JSON.stringify(friendinfo.data)});
 
+      // fetch user fb id and corresponding data
       let responsetwo = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
       let nameinfo = await responsetwo.json();
 
-      try {
+      // store fb data with fb id as key into global storage
+      try
+      {
         await AsyncStorage.setItem('sessionid', JSON.stringify(nameinfo));
         console.log("success storing session id");
-      } catch (error) {
+      }
+      catch (error)
+      {
         console.log("error saving session id");
       }
-
-
     }
   }
 

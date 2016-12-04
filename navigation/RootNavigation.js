@@ -23,8 +23,6 @@ import PubSub from 'pubsub-js';
 
 import * as firebase from 'firebase';
 
-
-
 export default class RootNavigation extends React.Component {
   constructor(props) {
       super(props);
@@ -39,94 +37,69 @@ export default class RootNavigation extends React.Component {
     this._notificationSubscription && this._notificationSubscription.remove();
   }
 
-
-
   render() {
-
-  	var that = this;
-
-    var mySubscriber = function(msg, data)
+  	var navComp = this;
+    var navSub = function(msg, data)
     {
       if (data === true)
       {
-          console.log("this is happening 100 times");
-          that.setState({visibility: true});
-          // PubSub.unsubscribe(token);
+        navComp.setState({visibility: true});
+        console.log("user logged in, show nav bar");
       }
       else
       {
-        that.setState({visibility: false});
-        console.log("logged out in pub sub");
+        navComp.setState({visibility: false});
+        console.log("user logged out, hide nav bar");
       }
     }
-  	var token = PubSub.subscribe('loggedin', mySubscriber);
-    // firebase.auth().onAuthStateChanged(
-    // function(user) {
-    //     if(user != null) {
-    //         console.log("We are authenticated now!");
-    //         that.setState({visibility: true});
-    //     }
-    // });
+  	var token = PubSub.subscribe('loggedin', navSub);
 
-if (this.state.visibility === true)
-{
-
-	  return (
-
-
-	    <TabNavigation
-	      tabBarHeight={56}
-	      initialTab="logIn">
-	      <TabNavigationItem
-	        id="logIn"
-	        renderIcon={isSelected => this._renderIcon('home', isSelected)}>
-	        <StackNavigation initialRoute="logIn" />
-	      </TabNavigationItem>
-
-	      <TabNavigationItem
-	        id="links"
-	        renderIcon={isSelected => this._renderIcon('book', isSelected)}>
-	        <StackNavigation initialRoute="links" />
-	      </TabNavigationItem>
-
-	      <TabNavigationItem
-	        id="settings"
-	        renderIcon={isSelected => this._renderIcon('cog', isSelected)}>
-	        <StackNavigation initialRoute="settings" />
-	      </TabNavigationItem>
-	    </TabNavigation>
-	  );
-
-	}
-	else
-	{
-		return (
-
-
-	    <TabNavigation
-	      tabBarHeight={0}
-	      initialTab="logIn">
-        <TabNavigationItem
-	        id="logIn">
-	        <StackNavigation initialRoute="logIn" />
-	      </TabNavigationItem>
-        <TabNavigationItem
-	        id="links"
-	        >
-	        <StackNavigation/>
-	      </TabNavigationItem>
-
-	      <TabNavigationItem
-	        id="settings"
-	        >
-	        <StackNavigation/>
-	      </TabNavigationItem>
-	    </TabNavigation>
-	  );
-	}
-
+    if (this.state.visibility === true)
+    {
+  	  return (
+  	    <TabNavigation
+  	      tabBarHeight={56}
+  	      initialTab="logIn">
+  	      <TabNavigationItem
+  	        id="logIn"
+  	        renderIcon={isSelected => this._renderIcon('home', isSelected)}>
+  	        <StackNavigation initialRoute="logIn" />
+  	      </TabNavigationItem>
+  	      <TabNavigationItem
+  	        id="links"
+  	        renderIcon={isSelected => this._renderIcon('book', isSelected)}>
+  	        <StackNavigation initialRoute="links" />
+  	      </TabNavigationItem>
+  	      <TabNavigationItem
+  	        id="settings"
+  	        renderIcon={isSelected => this._renderIcon('cog', isSelected)}>
+  	        <StackNavigation initialRoute="settings" />
+  	      </TabNavigationItem>
+  	    </TabNavigation>
+  	  );
+  	}
+  	else
+  	{
+  		return (
+  	    <TabNavigation
+  	      tabBarHeight={1}
+  	      initialTab="logIn">
+          <TabNavigationItem
+  	        id="logIn">
+  	        <StackNavigation initialRoute="logIn" />
+  	      </TabNavigationItem>
+          <TabNavigationItem
+  	        id="links"
+  	        >
+  	      </TabNavigationItem>
+  	      <TabNavigationItem
+  	        id="settings"
+  	        >
+  	      </TabNavigationItem>
+  	    </TabNavigation>
+  	  );
+  	}
   }
-
 
   _renderIcon(name, isSelected) {
     return (

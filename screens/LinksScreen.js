@@ -28,7 +28,7 @@ export default class LinksScreen extends React.Component
     this.state = {text: 'Enter table number:'};
   }
 
-  {/* Submits input on press */}
+  /* Submits input on press */
   async _handlePress()
   {
     try
@@ -36,14 +36,12 @@ export default class LinksScreen extends React.Component
       const nameinfo = await AsyncStorage.getItem('sessionid');
       if (nameinfo !== null)
       {
-        // We have data!!
-        console.log(nameinfo);
         var jsonnameinfo = JSON.parse(nameinfo);
       }
     }
     catch (error)
     {
-      console.log("error getting data");
+      console.log("error getting data from AsyncStorage");
     }
 
     var submitTableNum = this.state.text.toUpperCase();
@@ -55,7 +53,7 @@ export default class LinksScreen extends React.Component
     { /* Form validation */}
     if (length < 2 || length > 3)
     {
-      Alert.alert('Error', 'Insert a valid table number.');
+      Alert.alert('Error', 'Please insert a valid table number.');
       this.setState({text: ''});
     }
     else
@@ -88,15 +86,15 @@ export default class LinksScreen extends React.Component
       }
     }
   }
-  static route = 
+  static route =
   {
-    navigationBar: 
+    navigationBar:
     {
       title: 'Check In',
     },
   }
 
-  render() 
+  render()
   {
     return (
       <View>
@@ -116,38 +114,17 @@ export default class LinksScreen extends React.Component
       <Text>
       </Text>
 
-      <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
-          <Text>
-            Logout with Facebook
-          </Text>
-        </TouchableOpacity>
+
       </View>
 
       </View>
 
     );
   }
-
-  _logOutWithFacebook = async () => 
-  {
-      try 
-      {
-        await AsyncStorage.removeItem('sessionid');
-        console.log("success deleting sessionid");
-      } 
-      catch (error) 
-      {
-        console.log("error deleting session id");
-      }
-      this.props.navigator.replace('logIn');
-      // this.props.navigator.pop('links');
-      // this.setState({loggedIn: false});
-      PubSub.publish('loggedin', false);
-  }
 }
 
 const styles = StyleSheet.create({
-  container: 
+  container:
   {
     flex: 1,
     paddingTop: 15,
