@@ -31,6 +31,8 @@ const firebaseConfig =
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
+var Display = require('react-native-device-display');
+
 export default class LogInScreen extends React.Component {
 
   constructor(props)
@@ -77,34 +79,39 @@ export default class LogInScreen extends React.Component {
     {
       return (
         <View style={styles.container}>
-          <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.contentContainer}>
-            <View style={styles.getStartedContainer}>
-              <Text style={styles.getStartedText}>
-                Welcome to Annenmerge!
-              </Text>
-            </View>
-            <View style={styles.helpContainer}>
-              <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
-                <Text>
-                  Login with Facebook
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+          <View style={{}}>
+            <Image
+              style={{position: 'absolute', width: Display.width, height: Display.height, resizeMode: 'cover'}}
+              source={require('../assets/images/background.jpg')}
+            />
+          </View>
+          <View style={styles.helpContainer}>
+            <Image
+              style={{position: 'absolute', width: Display.width, resizeMode: 'contain'}}
+              source={require('../assets/images/logo.png')}
+            />
+            <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
+              <Image 
+                style={{width: 0.75*Display.width, resizeMode: 'contain'}}
+                source={require('../assets/images/login-button.png')}
+              />
+            </TouchableOpacity>
+          </View>
+
         </View>
     );
 
     }
     else
     {
-        var jsonfbdata = JSON.parse(this.state.fbfrienddata);
-        /* Loops over each friend in the friend list */
-        for (var i = 0; i < jsonfbdata.length; i++)
+      var jsonfbdata = JSON.parse(this.state.fbfrienddata);
+      /* Loops over each friend in the friend list */
+      for (var i = 0; i < jsonfbdata.length; i++)
+      {
+        var userId = jsonfbdata[i].id;
+        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot)
         {
-          var userId = jsonfbdata[i].id;
-          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot)
+          try
           {
             var userId = snapshot.key;
             var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
@@ -123,27 +130,33 @@ export default class LogInScreen extends React.Component {
               }
 
               logincomp.setState({objectdisplaydata: objectcopy, dataSource: logincomp.ds.cloneWithRows(finaldisplaydata)});
-            }
-          });
-        }
-        return (
-          <View style={styles.container}>
-            <Text></Text>
-            <Text></Text>
-            <ListView
-            style={styles.postsListView}
-            dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text>{data}</Text></View>}
-            />
-            <View style={styles.helpContainer}>
-              <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
-                <Text>
-                  Logout with Facebook
-                </Text>
-              </TouchableOpacity>
-            </View>
+            }            
+          }
+          catch (error)
+          {
+            console.log("One of the data entries is null.");
+          }
+
+        });
+      }
+      return (
+        <View style={styles.container}>
+          <Text></Text>
+          <Text></Text>
+          <ListView
+          style={styles.postsListView}
+          dataSource={this.state.dataSource}
+          renderRow={(data) => <View><Text>{data}</Text></View>}
+          />
+          <View style={styles.helpContainer}>
+            <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+              <Text>
+                Logout with Facebook
+              </Text>
+            </TouchableOpacity>
           </View>
-        );
+        </View>
+      );
     }
   }
 
@@ -239,11 +252,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 15,
-    textAlign: 'center',
+  imageContainer: {
+    flex: 1,
+    alignItems: 'stretch'
+  },
+  loginBG: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: null,
+    height: null,
+  },
+  loginBG2: {
+    width: 500,
+    height: 500,
   },
   contentContainer: {
     paddingTop: 80,
@@ -308,7 +329,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   helpContainer: {
-    marginTop: 15,
+    marginTop: 0.25*Display.height,
     alignItems: 'center',
   },
   helpLink: {
