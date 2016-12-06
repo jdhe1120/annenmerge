@@ -17,5 +17,11 @@
   },
   "packagerOpts": {
     "assetExts": ["ttf"]
+  },
+  "ios": {
+    "bundleIdentifier": "com.annenmerge.exp",
+  },
+  "android": {
+    "package": "com.annenmerge.exp",
   }
 }
