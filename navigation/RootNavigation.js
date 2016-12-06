@@ -29,14 +29,6 @@ export default class RootNavigation extends React.Component {
       this.state = {visibility: false};
     }
 
-  componentDidMount() {
-    this._notificationSubscription = this._registerForPushNotifications();
-  }
-
-  componentWillUnmount() {
-    this._notificationSubscription && this._notificationSubscription.remove();
-  }
-
   render() {
   	var navComp = this;
     var navSub = function(msg, data)
@@ -59,16 +51,16 @@ export default class RootNavigation extends React.Component {
   	  return (
   	    <TabNavigation
   	      tabBarHeight={56}
-  	      initialTab="logIn">
+  	      initialTab="home">
   	      <TabNavigationItem
-  	        id="logIn"
+  	        id="home"
   	        renderIcon={isSelected => this._renderIcon('map-marker', isSelected)}>
-  	        <StackNavigation initialRoute="logIn" />
+  	        <StackNavigation initialRoute="home" />
   	      </TabNavigationItem>
   	      <TabNavigationItem
-  	        id="links"
+  	        id="submit"
   	        renderIcon={isSelected => this._renderIcon('pencil', isSelected)}>
-  	        <StackNavigation initialRoute="links" />
+  	        <StackNavigation initialRoute="submit" />
   	      </TabNavigationItem>
   	      <TabNavigationItem
   	        id="settings"
@@ -83,13 +75,13 @@ export default class RootNavigation extends React.Component {
   		return (
   	    <TabNavigation
   	      tabBarHeight={0.1}
-  	      initialTab="logIn">
+  	      initialTab="home">
           <TabNavigationItem
-  	        id="logIn">
-  	        <StackNavigation initialRoute="logIn" />
+  	        id="home">
+  	        <StackNavigation initialRoute="home" />
   	      </TabNavigationItem>
           <TabNavigationItem
-  	        id="links"
+  	        id="submit"
   	        >
   	      </TabNavigationItem>
   	      <TabNavigationItem
@@ -108,24 +100,6 @@ export default class RootNavigation extends React.Component {
         size={32}
         color={isSelected ? Colors.tabIconSelected : Colors.tabIconDefault}
       />
-    );
-  }
-
-  _registerForPushNotifications() {
-    // Send our push token over to our backend so we can receive notifications
-    // You can comment the following line out if you want to stop receiving
-    // a notification every time you open the app. Check out the source
-    // for this function in api/registerForPushNotificationsAsync.js
-    registerForPushNotificationsAsync();
-
-    // Watch for incoming notifications
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
-  }
-
-  _handleNotification = ({origin, data}) => {
-    this.props.navigator.showLocalAlert(
-      `Push notification ${origin} with data: ${JSON.stringify(data)}`,
-      Alerts.notice
     );
   }
 }

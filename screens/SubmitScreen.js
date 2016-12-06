@@ -21,7 +21,7 @@ import * as firebase from 'firebase';
 import { Facebook } from 'exponent';
 import PubSub from 'pubsub-js';
 
-export default class LinksScreen extends React.Component
+export default class SubmitScreen extends React.Component
 {
   constructor(props)
   {

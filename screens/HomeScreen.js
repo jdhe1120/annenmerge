@@ -14,6 +14,7 @@ import
   AsyncStorage,
   ListView,
   NavigatorIOS,
+  StatusBar
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
@@ -37,7 +38,7 @@ var devWidth = Dimensions.get('window').width;
 console.log(devHeight);
 console.log(devWidth);
 
-export default class LogInScreen extends React.Component {
+export default class HomeScreen extends React.Component {
 
   constructor(props)
   {
@@ -56,7 +57,7 @@ export default class LogInScreen extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.loggedIn !== this.state.loggedIn)
     {
-      console.log("update logInScreen component as loggedIn is now " + nextState.loggedIn);
+      console.log("update HomeScreen component as loggedIn is now " + nextState.loggedIn);
       return true;
     }
     else
@@ -67,22 +68,26 @@ export default class LogInScreen extends React.Component {
 
   render() {
 
-    var logincomp = this;
+    var homecomp = this;
 
-    // var logInSubscriber = function(msg, data)
+    // var homeSubscriber = function(msg, data)
     // {
     //   if (!data)
     //   {
     //     console.log("user has now logged out");
-    //     logincomp.setState({loggedIn: false});
+    //     homecomp.setState({loggedIn: false});
     //   }
     // }
-  	// var token = PubSub.subscribe('loggedin', logInSubscriber);
+  	// var token = PubSub.subscribe('loggedin', homeSubscriber);
 
     if (!this.state.loggedIn)
     {
       return (
         <View style={styles.container}>
+          <StatusBar
+            backgroundColor="white"
+            barStyle="light-content"
+          />
           <View style={{}}>
             <Image
               style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
@@ -119,11 +124,11 @@ export default class LogInScreen extends React.Component {
           {
             var userId = snapshot.key;
             var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
-            if (hoursago <= 3)
+            if (hoursago <= 300)
             {
               var tablenumber = snapshot.val().tablenumber;
               var name = snapshot.val().name;
-              var objectcopy = JSON.parse(JSON.stringify(logincomp.state.objectdisplaydata));
+              var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
               objectcopy[userId] = [name, tablenumber, hoursago];
               var finaldisplaydata = [];
 
@@ -133,8 +138,8 @@ export default class LogInScreen extends React.Component {
                 finaldisplaydata.push(objectcopy[x][0] + " " + objectcopy[x][1] + " - " + objectcopy[x][2] + " hours ago");
               }
 
-              logincomp.setState({objectdisplaydata: objectcopy, dataSource: logincomp.ds.cloneWithRows(finaldisplaydata)});
-            }            
+              homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
+            }
           }
           catch (error)
           {
