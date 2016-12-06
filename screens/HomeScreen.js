@@ -35,8 +35,14 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 var devHeight = Dimensions.get('window').height;
 var devWidth = Dimensions.get('window').width;
-console.log(devHeight);
-console.log(devWidth);
+
+// Listen for authentication state to change.
+firebase.auth().onAuthStateChanged(
+    function(user) {
+        if(user != null) {
+            console.log("We are authenticated now!");
+        }
+    });
 
 export default class HomeScreen extends React.Component {
 
@@ -52,6 +58,8 @@ export default class HomeScreen extends React.Component {
       dataSource: this.ds.cloneWithRows(['Loading...']),
     };
   }
+
+
 
   /* Updates screen if log-in state changes. If log-in state doesn't change, update only when data changes. */
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,35 +126,38 @@ export default class HomeScreen extends React.Component {
       for (var i = 0; i < jsonfbdata.length; i++)
       {
         var userId = jsonfbdata[i].id;
-        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot)
+        if (firebase.auth().currentUser != null)
         {
-          try
+          firebase.database().ref('/users/' + userId).once('value').then(function(snapshot)
           {
-            var userId = snapshot.key;
-            var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
-            if (hoursago <= 300)
+            try
             {
-              var tablenumber = snapshot.val().tablenumber;
-              var name = snapshot.val().name;
-              var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
-              objectcopy[userId] = [name, tablenumber, hoursago];
-              var finaldisplaydata = [];
-
-              /* Creates row of data for each friend */
-              for(var x in objectcopy)
+              var userId = snapshot.key;
+              var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
+              if (hoursago <= 300)
               {
-                finaldisplaydata.push(objectcopy[x][0] + " " + objectcopy[x][1] + " - " + objectcopy[x][2] + " hours ago");
+                var tablenumber = snapshot.val().tablenumber;
+                var name = snapshot.val().name;
+                var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
+                objectcopy[userId] = [name, tablenumber, hoursago];
+                var finaldisplaydata = [];
+
+                /* Creates row of data for each friend */
+                for(var x in objectcopy)
+                {
+                  finaldisplaydata.push(objectcopy[x][0] + " " + objectcopy[x][1] + " - " + objectcopy[x][2] + " hours ago");
+                }
+
+                homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
-
-              homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
             }
-          }
-          catch (error)
-          {
-            console.log("One of the data entries is null.");
-          }
+            catch (error)
+            {
+              console.log("One of the data entries is null.");
+            }
 
-        });
+          });
+        }
       }
       return (
         <View style={styles.container}>
@@ -198,8 +209,8 @@ export default class HomeScreen extends React.Component {
 
       // Sign in with credential from the Facebook user.
       firebase.auth().signInWithCredential(credential).catch(function(error) {
-            // Handle Errors here.
-            console.log("error signing into Firebase");
+        // Handle Errors here.
+        console.log("error signing into Firebase");
       });
 
       // fetch friend information from facebook

@@ -54,49 +54,43 @@ export default class SubmitScreen extends React.Component
     var submitTableNum = this.state.text.toUpperCase();
 
     let length = submitTableNum.length;
-
-    // do form validation checking ensuring the table is A B C and <= 17
-    if (length < 2 || length > 3)
+    if (firebase.auth().currentUser != null)
     {
-      Alert.alert('Error', 'Please insert a valid table number.');
-      this.setState({text: ''});
-    }
-    else
-    {
-      var tableLetter = submitTableNum[0];
-      if (tableLetter != "A" && tableLetter != "B" && tableLetter != "C")
+      // do form validation checking ensuring the table is A B C and <= 17
+      if (length < 2 || length > 3)
       {
-        Alert.alert('Error', 'Your table should start with A, B, or C.');
+        Alert.alert('Error', 'Please insert a valid table number.');
+        this.setState({text: ''});
       }
       else
       {
-        var tableDigits = parseInt(submitTableNum.substring(1));
-
-        if (tableDigits <= 17)
+        var tableLetter = submitTableNum[0];
+        if (tableLetter != "A" && tableLetter != "B" && tableLetter != "C")
         {
-            // enter into database with user as key and tablenum and time as values
-            firebase.database().ref('users/' + userId).set({
-            name: usersName,
-            tablenumber: submitTableNum,
-            time: new Date().getTime(),
-            });
-            Alert.alert('Your table has been submitted!');
+          Alert.alert('Error', 'Your table should start with A, B, or C.');
         }
         else
         {
-          Alert.alert('Error', 'The table number must be between 1 and 17.');
-          this.setState({text: ''});
+          var tableDigits = parseInt(submitTableNum.substring(1));
+
+          if (tableDigits <= 17)
+          {
+              // enter into database with user as key and tablenum and time as values
+              firebase.database().ref('users/' + userId).set({
+              name: usersName,
+              tablenumber: submitTableNum,
+              time: new Date().getTime(),
+              });
+              Alert.alert('Your table has been submitted!');
+          }
+          else
+          {
+            Alert.alert('Error', 'The table number must be between 1 and 17.');
+            this.setState({text: ''});
+          }
         }
       }
     }
-  }
-
-  static route =
-  {
-    navigationBar:
-    {
-      title: 'Check In',
-    },
   }
 
   render()
