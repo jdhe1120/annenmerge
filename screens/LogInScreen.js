@@ -3,6 +3,7 @@ import
 {
   AppRegistry,
   Image,
+  Dimensions,
   Linking,
   Platform,
   ScrollView,
@@ -31,7 +32,10 @@ const firebaseConfig =
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-var Display = require('react-native-device-display');
+var devHeight = Dimensions.get('window').height;
+var devWidth = Dimensions.get('window').width;
+console.log(devHeight);
+console.log(devWidth);
 
 export default class LogInScreen extends React.Component {
 
@@ -81,18 +85,18 @@ export default class LogInScreen extends React.Component {
         <View style={styles.container}>
           <View style={{}}>
             <Image
-              style={{position: 'absolute', width: Display.width, height: Display.height, resizeMode: 'cover'}}
+              style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
               source={require('../assets/images/background.jpg')}
             />
           </View>
           <View style={styles.helpContainer}>
             <Image
-              style={{position: 'absolute', width: Display.width, resizeMode: 'contain'}}
+              style={{position: 'absolute', width: devWidth, resizeMode: 'contain'}}
               source={require('../assets/images/logo.png')}
             />
             <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
-              <Image 
-                style={{width: 0.75*Display.width, resizeMode: 'contain'}}
+              <Image
+                style={{width: 0.75*devWidth, resizeMode: 'contain'}}
                 source={require('../assets/images/login-button.png')}
               />
             </TouchableOpacity>
@@ -329,7 +333,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   helpContainer: {
-    marginTop: 0.25*Display.height,
+    marginTop: 0.25*devHeight,
     alignItems: 'center',
   },
   helpLink: {
