@@ -16,7 +16,7 @@ import
 {
   ExponentLinksView,
 } from '@exponent/samples';
-import{
+import {
   withNavigation,
 } from '@exponent/ex-navigation';
 

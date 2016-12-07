@@ -16,6 +16,9 @@ import
   NavigatorIOS,
   StatusBar
 } from 'react-native';
+import {
+  withNavigation,
+} from '@exponent/ex-navigation';
 
 import { MonoText } from '../components/StyledText';
 import { Facebook } from 'exponent';
@@ -46,6 +49,7 @@ firebase.auth().onAuthStateChanged(
         }
     });
 
+@withNavigation
 export default class HomeScreen extends React.Component {
 
   constructor(props)
@@ -55,6 +59,7 @@ export default class HomeScreen extends React.Component {
     this.state =
     {
       loggedIn: false,
+      friendsExist: false,
       fbfrienddata: "",
       objectdisplaydata: {},
       dataSource: this.ds.cloneWithRows(['Loading...']),
@@ -80,15 +85,18 @@ export default class HomeScreen extends React.Component {
 
     var homecomp = this;
 
-    // var homeSubscriber = function(msg, data)
-    // {
-    //   if (!data)
-    //   {
-    //     console.log("user has now logged out");
-    //     homecomp.setState({loggedIn: false});
-    //   }
-    // }
-  	// var token = PubSub.subscribe('loggedin', homeSubscriber);
+    var homeSubscriber = function(msg, data)
+    {
+      if (!data)
+      {
+        console.log("user has now logged out");
+        homecomp.setState({loggedIn: false});
+        homecomp.props.navigation.performAction(({ tabs, stacks }) => {
+          tabs('main').jumpToTab('home');
+        });
+      }
+    }
+  	var token = PubSub.subscribe('loggedin', homeSubscriber);
 
     if (!this.state.loggedIn)
     {
@@ -124,6 +132,7 @@ export default class HomeScreen extends React.Component {
     else
     {
       var jsonfbdata = JSON.parse(this.state.fbfrienddata);
+
       /* Loops over each friend in the friend list */
       for (var i = 0; i < jsonfbdata.length; i++)
       {
@@ -134,7 +143,6 @@ export default class HomeScreen extends React.Component {
           {
             try
             {
-              console.log(snapshot.val());
               var userId = snapshot.key;
               var hoursFloat = (new Date().getTime() - parseInt(snapshot.val().time)) / milSecPerHour;
               var hours = Math.floor(hoursFloat);
@@ -146,6 +154,8 @@ export default class HomeScreen extends React.Component {
                 var tablenumber = snapshot.val().tablenumber;
                 var name = snapshot.val().name;
                 var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
+
+                /* If someone checked in <1 hour ago, "0h" is not shown */
                 let dispTime = hours > 0 ? hours + "h " + minutes : minutes;
                 objectcopy[userId] = [name, tablenumber, hours, minutes, dispTime];
                 var finaldisplaydata = [];
@@ -153,10 +163,9 @@ export default class HomeScreen extends React.Component {
                 /* Creates row of data for each friend */
                 for(var x in objectcopy)
                 {
-                  /* If someone checked in <1 hour ago, "0h" is not shown */
                   finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "min ago");
                 }
-                homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
+                homecomp.setState({friendsExist: true, objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
             }
             catch (error)
@@ -167,38 +176,30 @@ export default class HomeScreen extends React.Component {
           });
         }
       }
-      return (
-        <View style={styles.container}>
-          <ListView
-          style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}
-          dataSource={this.state.dataSource}
-          renderRow={(data) => <View><Text>{data}</Text></View>}
-          />
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
-              <Text>
-                Logout with Facebook
-              </Text>
-            </TouchableOpacity>
+      if (this.state.friendsExist)
+      {
+        return (
+          <View style={styles.container}>
+            <ListView
+            style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}
+            dataSource={this.state.dataSource}
+            renderRow={(data) => <View><Text>{data}</Text></View>}
+            />
           </View>
-        </View>
-      );
-    }
-  }
+        );
+      }
+      else
+      {
+        return (
+          <View style={styles.container}>
+            <Text style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}>
+              No friends found. :( 
+            </Text>
+          </View>
+        );
+      }
 
-  _logOutWithFacebook = async () =>
-  {
-      try
-      {
-        await AsyncStorage.removeItem('sessionid');
-        console.log("sessionid deleted");
-      }
-      catch (error)
-      {
-        console.log("error deleting session id");
-      }
-      this.setState({loggedIn: false});
-      PubSub.publish('loggedin', false);
+    }
   }
 
   _signInWithFacebook = async () => {
