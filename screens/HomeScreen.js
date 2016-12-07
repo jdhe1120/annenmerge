@@ -146,15 +146,15 @@ export default class HomeScreen extends React.Component {
                 var tablenumber = snapshot.val().tablenumber;
                 var name = snapshot.val().name;
                 var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
-                objectcopy[userId] = [name, tablenumber, hours, minutes];
+                let dispTime = hours > 0 ? hours + "h " + minutes : minutes;
+                objectcopy[userId] = [name, tablenumber, hours, minutes, dispTime];
                 var finaldisplaydata = [];
 
                 /* Creates row of data for each friend */
                 for(var x in objectcopy)
                 {
                   /* If someone checked in <1 hour ago, "0h" is not shown */
-                  var dispTime = hours > 0 ? objectcopy[x][2] + "h " + objectcopy[x][3] + "min ago" : objectcopy[x][3] + "min ago";
-                  finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + dispTime);
+                  finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "min ago");
                 }
                 homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   helpLink: {
-    paddingVertical: 15,
+    paddingVertical: 150,
   },
   helpLinkText: {
     fontSize: 14,

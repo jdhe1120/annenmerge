@@ -34,10 +34,6 @@ export default class SubmitScreen extends React.Component
     this.state = {text: 'Enter table number'};
   }
 
-  _otherFunc() {
-    console.log("yoo");
-  }
-
   /* Submits input on press */
   async _handlePress()
   {
