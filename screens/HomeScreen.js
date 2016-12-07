@@ -59,7 +59,7 @@ export default class HomeScreen extends React.Component {
     this.state =
     {
       loggedIn: false,
-      friendsExist: false,
+      friendsExist: true,
       fbfrienddata: "",
       objectdisplaydata: {},
       dataSource: this.ds.cloneWithRows(['Loading...']),
@@ -132,7 +132,7 @@ export default class HomeScreen extends React.Component {
     else
     {
       var jsonfbdata = JSON.parse(this.state.fbfrienddata);
-
+      var friendsExist = false;
       /* Loops over each friend in the friend list */
       for (var i = 0; i < jsonfbdata.length; i++)
       {
@@ -165,23 +165,27 @@ export default class HomeScreen extends React.Component {
                 {
                   finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "min ago");
                 }
-                homecomp.setState({friendsExist: true, objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
+                friendsExist = true;
+                homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
             }
             catch (error)
             {
               console.log(error);
             }
-
           });
         }
+      }
+      if (friendsExist)
+      {
+        homecomp.setState({friendsExist: true});
       }
       if (this.state.friendsExist)
       {
         return (
           <View style={styles.container}>
             <ListView
-            style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}
+            style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
             dataSource={this.state.dataSource}
             renderRow={(data) => <View><Text>{data}</Text></View>}
             />
@@ -192,8 +196,8 @@ export default class HomeScreen extends React.Component {
       {
         return (
           <View style={styles.container}>
-            <Text style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}>
-              No friends found. :( 
+            <Text style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}>
+              No friends found.
             </Text>
           </View>
         );
@@ -234,6 +238,7 @@ export default class HomeScreen extends React.Component {
       {
         await AsyncStorage.setItem('sessionid', JSON.stringify(nameinfo));
         console.log("success storing session id");
+        PubSub.publish('sessionexists', true);
       }
       catch (error)
       {

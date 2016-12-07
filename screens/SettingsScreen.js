@@ -27,9 +27,9 @@ const firebaseConfig =
 const devWidth = Dimensions.get('window').width;
 
 export default class SettingsScreen extends React.Component {
-  static route = 
+  static route =
   {
-    navigationBar: 
+    navigationBar:
     {
       title: 'Settings'
     },
@@ -42,17 +42,30 @@ export default class SettingsScreen extends React.Component {
     {
       firstName: "User",
       tableNumber: "A1",
+      sessionExists: false,
     };
   }
 
-  componentWillMount() 
+  componentWillMount()
   {
     var settingsComp = this;
     settingsComp.getUserInfo();
   }
 
-
   render() {
+
+    var settingsComp = this;
+    var settingsSubscriber = function(msg, data)
+    {
+      if (data)
+      {
+        console.log("user's session has been stored - settings screen");
+        console.log("get the user's name and table");
+        settingsComp.getUserInfo();
+        settingsComp.setState({sessionExists: true});
+      }
+    }
+    var token = PubSub.subscribe('sessionexists', settingsSubscriber);
 
     return (
       <View style={{alignItems: 'center', marginTop: 10}}>
@@ -104,7 +117,7 @@ export default class SettingsScreen extends React.Component {
         }
         catch (error)
         {
-          console.log(error);
+          console.log("error finding user's own table number");
         }
       });
     }
@@ -122,6 +135,7 @@ export default class SettingsScreen extends React.Component {
         console.log("error deleting session id");
       }
       PubSub.publish('loggedin', false);
+      this.setState({sessionExists: false});
   }
 }
 
