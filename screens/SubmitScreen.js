@@ -16,17 +16,26 @@ import
 {
   ExponentLinksView,
 } from '@exponent/samples';
+import{
+  withNavigation,
+} from '@exponent/ex-navigation';
+
 
 import * as firebase from 'firebase';
 import { Facebook } from 'exponent';
 import PubSub from 'pubsub-js';
-
+import RootNavigation from '../navigation/RootNavigation'
+@withNavigation
 export default class SubmitScreen extends React.Component
 {
   constructor(props)
   {
     super(props);
     this.state = {text: 'Enter table number'};
+  }
+
+  _otherFunc() {
+    console.log("yoo");
   }
 
   /* Submits input on press */
@@ -82,6 +91,9 @@ export default class SubmitScreen extends React.Component
               time: new Date().getTime(),
               });
               Alert.alert('Your table has been submitted!');
+              this.props.navigation.performAction(({ tabs, stacks }) => {
+                tabs('main').jumpToTab('home');
+              });
           }
           else
           {
