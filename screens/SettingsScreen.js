@@ -42,7 +42,6 @@ export default class SettingsScreen extends React.Component {
     {
       firstName: "User",
       tableNumber: "A1",
-      sessionExists: false,
     };
   }
 
@@ -55,17 +54,25 @@ export default class SettingsScreen extends React.Component {
   render() {
 
     var settingsComp = this;
-    var settingsSubscriber = function(msg, data)
+    var settingsSessionSubscriber = function(msg, data)
     {
       if (data)
       {
-        console.log("user's session has been stored - settings screen");
-        console.log("get the user's name and table");
+        console.log("user's session has been stored - settings screen, get user's table");
         settingsComp.getUserInfo();
-        settingsComp.setState({sessionExists: true});
       }
     }
-    var token = PubSub.subscribe('sessionexists', settingsSubscriber);
+    var token = PubSub.subscribe('sessionexists', settingsSessionSubscriber);
+
+    var settingsTableSubscriber = function(msg, data)
+    {
+      if (data)
+      {
+        console.log("user has submitted new data - settings screen, get user's table");
+        settingsComp.getUserInfo();
+      }
+    }
+    var token = PubSub.subscribe('newtablesubmit', settingsTableSubscriber);
 
     return (
       <View style={{alignItems: 'center', marginTop: 10}}>
@@ -136,7 +143,6 @@ export default class SettingsScreen extends React.Component {
         console.log("error deleting session id");
       }
       PubSub.publish('loggedin', false);
-      this.setState({sessionExists: false});
   }
 }
 

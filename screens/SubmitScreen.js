@@ -99,6 +99,7 @@ export default class SubmitScreen extends React.Component
         }
       }
     }
+    PubSub.publish('newtablesubmit', true);
   }
 
   render()
