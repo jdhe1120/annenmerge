@@ -25,23 +25,17 @@ const firebaseConfig =
 };
 
 const devWidth = Dimensions.get('window').width;
+const devHeight = Dimensions.get('window').height;
 
 export default class SettingsScreen extends React.Component {
-  static route =
-  {
-    navigationBar:
-    {
-      title: 'Settings'
-    },
-  }
 
   constructor(props)
   {
     super(props);
     this.state =
     {
-      firstName: "User",
-      tableNumber: "A1",
+      welcomeText: "Welcome!",
+      tableText: "Please submit a table number.",
     };
   }
 
@@ -75,20 +69,28 @@ export default class SettingsScreen extends React.Component {
     var token = PubSub.subscribe('newtablesubmit', settingsTableSubscriber);
 
     return (
-      <View style={{alignItems: 'center', marginTop: 10}}>
-        <Text style={{fontSize: 20, fontStyle: 'italic'}}>
-          Welcome back, {this.state.firstName}!
-        </Text>
-        <View style={{height: 5}}></View>
-        <Text verticalPadding>
-          Your table number is {this.state.tableNumber}.
-        </Text>
-        <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, marginTop: 25}}>
+      <View>
+        <View>
           <Image
-            style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, resizeMode: 'contain'}}
-            source={require('../assets/images/logout-button.png')}
+            style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
+            source={require('../assets/images/metalBG.jpg')}
           />
-        </TouchableOpacity>
+        </View>
+        <View style={{alignItems: 'center', marginTop: 50}}>
+          <Text style={{fontSize: 20, fontStyle: 'italic', color: 'white'}}>
+            {this.state.welcomeText}
+          </Text>
+          <View style={{height: 5}}></View>
+          <Text style={{color: 'white'}}>
+            {this.state.tableText}.
+          </Text>
+          <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, marginTop: 25}}>
+            <Image
+              style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, resizeMode: 'contain'}}
+              source={require('../assets/images/logout-button.png')}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -121,7 +123,7 @@ export default class SettingsScreen extends React.Component {
         {
           var tableNumber = snapshot.val().tablenumber;
           console.log(tableNumber);
-          settingsComp.setState({firstName: firstName, tableNumber: tableNumber});
+          settingsComp.setState({welcomeText: "Welcome back, "+firstName+"!", tableText: "Your table number is "+tableNumber});
         }
         catch (error)
         {

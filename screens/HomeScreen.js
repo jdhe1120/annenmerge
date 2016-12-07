@@ -106,7 +106,7 @@ export default class HomeScreen extends React.Component {
             backgroundColor="white"
             barStyle="light-content"
           />
-          <View style={{}}>
+          <View>
             <Image
               style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
               source={require('../assets/images/background.jpg')}
@@ -183,10 +183,16 @@ export default class HomeScreen extends React.Component {
       {
         return (
           <View style={styles.container}>
+            <View>
+              <Image
+                style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
+                source={require('../assets/images/metalBG.jpg')}
+              />
+            </View>
             <ListView
             style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
             dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text>{data}</Text></View>}
+            renderRow={(data) => <View><Text style={{color: 'white'}}>{data}</Text></View>}
             />
           </View>
         );
