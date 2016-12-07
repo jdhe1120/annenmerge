@@ -8,7 +8,8 @@
     "test": "jest"
   },
   "jest": {
-    "preset": "jest-exponent"
+    "preset": "jest-exponent",
+    "modulePathIgnorePatterns": ["/node_modules/"]
   },
   "dependencies": {
     "@exponent/ex-navigation": "~2.0.0",

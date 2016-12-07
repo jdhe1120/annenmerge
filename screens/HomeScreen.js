@@ -33,8 +33,10 @@ const firebaseConfig =
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-var devHeight = Dimensions.get('window').height;
-var devWidth = Dimensions.get('window').width;
+const devHeight = Dimensions.get('window').height;
+const devWidth = Dimensions.get('window').width;
+const statusBarHeight = Platform.OS === 'ios' ? 40 : StatusBar.currentHeight;
+const milSecPerHour = 3600000;
 
 // Listen for authentication state to change.
 firebase.auth().onAuthStateChanged(
@@ -132,28 +134,34 @@ export default class HomeScreen extends React.Component {
           {
             try
             {
+              console.log(snapshot.val());
               var userId = snapshot.key;
-              var hoursago = -(Math.round((parseInt(snapshot.val().time) - new Date().getTime())/3600000));
-              if (hoursago <= 300)
+              var hoursFloat = (new Date().getTime() - parseInt(snapshot.val().time)) / milSecPerHour;
+              var hours = Math.floor(hoursFloat);
+
+              /* Rounds remainder to nearest 5 minutes */
+              var minutes = Math.round(((hoursFloat % 1) * 60) / 5) * 5;
+              if (hours <= 300000)
               {
                 var tablenumber = snapshot.val().tablenumber;
                 var name = snapshot.val().name;
                 var objectcopy = JSON.parse(JSON.stringify(homecomp.state.objectdisplaydata));
-                objectcopy[userId] = [name, tablenumber, hoursago];
+                objectcopy[userId] = [name, tablenumber, hours, minutes];
                 var finaldisplaydata = [];
 
                 /* Creates row of data for each friend */
                 for(var x in objectcopy)
                 {
-                  finaldisplaydata.push(objectcopy[x][0] + " " + objectcopy[x][1] + " - " + objectcopy[x][2] + " hours ago");
+                  /* If someone checked in <1 hour ago, "0h" is not shown */
+                  var dispTime = hours > 0 ? objectcopy[x][2] + "h " + objectcopy[x][3] + "min ago" : objectcopy[x][3] + "min ago";
+                  finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + dispTime);
                 }
-
                 homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
             }
             catch (error)
             {
-              console.log("One of the data entries is null.");
+              console.log(error);
             }
 
           });
@@ -161,10 +169,8 @@ export default class HomeScreen extends React.Component {
       }
       return (
         <View style={styles.container}>
-          <Text></Text>
-          <Text></Text>
           <ListView
-          style={styles.postsListView}
+          style={{marginLeft: 0.05*devWidth, marginTop: statusBarHeight}}
           dataSource={this.state.dataSource}
           renderRow={(data) => <View><Text>{data}</Text></View>}
           />
@@ -233,37 +239,6 @@ export default class HomeScreen extends React.Component {
         console.log("error saving session id");
       }
     }
-  }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will run slightly slower but
-          you have access to useful development tools. {learnMoreButton}.
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    Linking.openURL('https://docs.getexponent.com/versions/latest/guides/development-mode');
-  }
-
-  _handleHelpPress = () => {
-    Linking.openURL('https://docs.getexponent.com/versions/latest/guides/up-and-running.html#can-t-see-your-changes');
   }
 }
 
