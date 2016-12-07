@@ -183,6 +183,10 @@ export default class HomeScreen extends React.Component {
       {
         return (
           <View style={styles.container}>
+            <StatusBar
+              backgroundColor="white"
+              barStyle="light-content"
+            />
             <View>
               <Image
                 style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
@@ -192,7 +196,7 @@ export default class HomeScreen extends React.Component {
             <ListView
             style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
             dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text style={{color: 'white'}}>{data}</Text></View>}
+            renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent'}}>{data}</Text></View>}
             />
           </View>
         );
