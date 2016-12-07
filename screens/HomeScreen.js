@@ -112,14 +112,13 @@ export default class HomeScreen extends React.Component {
               source={require('../assets/images/background.jpg')}
             />
           </View>
-          <View style={styles.helpContainer}>
+          <View style={styles.imageContainer}>
             <Image
               style={{position: 'absolute', width: devWidth, resizeMode: 'contain'}}
               source={require('../assets/images/logo.png')}
             />
-            <TouchableOpacity onPress={this._signInWithFacebook} style={styles.helpLink}>
-              <Image
-                style={{width: 0.75*devWidth, resizeMode: 'contain'}}
+            <TouchableOpacity onPress={this._signInWithFacebook} style={{width: 0.75*devWidth, height: 0.75*devWidth*159/713, marginTop: 150}}>
+              <Image style={{width: 0.75*devWidth, height: 0.75*devWidth*159/713, resizeMode: 'contain'}}
                 source={require('../assets/images/login-button.png')}
               />
             </TouchableOpacity>
@@ -171,7 +170,7 @@ export default class HomeScreen extends React.Component {
             }
             catch (error)
             {
-              console.log(error);
+              console.log("One of the users has null data.");
             }
           });
         }
@@ -253,10 +252,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  imageContainer: {
-    flex: 1,
-    alignItems: 'stretch'
-  },
   loginBG: {
     flex: 1,
     resizeMode: 'contain',
@@ -329,8 +324,8 @@ const styles = StyleSheet.create({
   navigationFilename: {
     marginTop: 5,
   },
-  helpContainer: {
-    marginTop: 0.25*devHeight,
+  imageContainer: {
+    marginTop: .25*devHeight,
     alignItems: 'center',
   },
   helpLink: {

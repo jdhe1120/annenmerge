@@ -72,12 +72,13 @@ export default class SettingsScreen extends React.Component {
         <Text style={{fontSize: 20, fontStyle: 'italic'}}>
           Welcome back, {this.state.firstName}!
         </Text>
-        <Text>
+        <View style={{height: 5}}></View>
+        <Text verticalPadding>
           Your table number is {this.state.tableNumber}.
         </Text>
-        <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.helpLink}>
+        <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, marginTop: 25}}>
           <Image
-            style={{width: 0.75*devWidth, resizeMode: 'contain'}}
+            style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, resizeMode: 'contain'}}
             source={require('../assets/images/logout-button.png')}
           />
         </TouchableOpacity>
