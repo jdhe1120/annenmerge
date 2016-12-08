@@ -5,6 +5,7 @@ import
   Alert,
   View,
   Text,
+  Image,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -25,13 +26,17 @@ import * as firebase from 'firebase';
 import { Facebook } from 'exponent';
 import PubSub from 'pubsub-js';
 import RootNavigation from '../navigation/RootNavigation'
+
+const devWidth = Dimensions.get('window').width;
+const devHeight = Dimensions.get('window').height;
+
 @withNavigation
 export default class SubmitScreen extends React.Component
 {
   constructor(props)
   {
     super(props);
-    this.state = {text: 'Enter table number'};
+    this.state = {text: ''};
   }
 
   /* Submits input on press */
@@ -104,30 +109,37 @@ export default class SubmitScreen extends React.Component
 
   render()
   {
-    var width = Dimensions.get('window').width;
-    var height = Dimensions.get('window').height;
     return (
-      <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-        <View style={{flex: 0.4}}></View>
-        <View style={{flex: 0.2, backgroundColor: 'gainsboro', paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center'}}>
-            <Text></Text>
-            <View style={{}}>
-              <TextInput
-                style={{height: 40, borderColor: 'gray', borderWidth: 2, width: width*0.8, textAlign:'center', borderRadius: 10}}
-                onChangeText={(text) => this.setState({text})}
-                value={this.state.text}
-                selectTextOnFocus={true}
-              />
-            </View>
-            <Text></Text>
-            <Button
-              style={{fontSize: 20, color: 'black'}}
-              styleDisabled={{color: 'red'}}
-              onPress={() => this._handlePress()}>
-              Submit
-            </Button>
+      <View>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Image
+            style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
+            source={require('../assets/images/metalBG.jpg')}
+          />
+          <Image
+            style={{position: 'absolute', top: 0.15*devHeight, left: 0.1*devWidth, width: 0.8*devWidth, resizeMode: 'contain'}}
+            source={require('../assets/images/submit-form.png')}
+          />
+          <TextInput
+            underlineColorAndroid={'transparent'}
+            style={{position: 'absolute', top: 0.41*devHeight, left: 0.35*devWidth, height: 35, borderColor: 'transparent', width: devWidth*0.3, textAlign:'center'}}
+            onChangeText={(text) => this.setState({text})}
+            value={this.state.text}
+            selectTextOnFocus={true}
+          />
+          <TouchableOpacity onPress={() => this._handlePress()} style={{
+              position: 'absolute',
+              left: 0.25*devWidth,
+              width: 0.5*devWidth, 
+              height: 0.5*devWidth*76/265, 
+              top: 0.55*devHeight,
+              alignItems: 'center', 
+              justifyContent: 'center'}}>
+            <Image style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, resizeMode: 'contain'}}
+              source={require('../assets/images/submit-metal.png')}
+            />
+          </TouchableOpacity>
         </View>
-        <View style={{flex: 0.4}}><Text></Text></View>
       </View>
     );
   }

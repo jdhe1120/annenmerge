@@ -162,7 +162,7 @@ export default class HomeScreen extends React.Component {
                 /* Creates row of data for each friend */
                 for(var x in objectcopy)
                 {
-                  finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "min ago");
+                  finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "m ago");
                 }
                 friendsExist = true;
                 homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
