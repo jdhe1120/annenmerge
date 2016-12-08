@@ -77,11 +77,11 @@ export default class SettingsScreen extends React.Component {
           />
         </View>
         <View style={{alignItems: 'center', marginTop: 50}}>
-          <Text style={{fontSize: 20, fontStyle: 'italic', color: 'white'}}>
+          <Text style={{fontSize: 20, fontStyle: 'italic', color: 'white', backgroundColor: 'transparent'}}>
             {this.state.welcomeText}
           </Text>
           <View style={{height: 5}}></View>
-          <Text style={{color: 'white'}}>
+          <Text style={{color: 'white', backgroundColor: 'transparent'}}>
             {this.state.tableText}.
           </Text>
           <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, marginTop: 25}}>

@@ -192,7 +192,7 @@ export default class HomeScreen extends React.Component {
             <ListView
             style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
             dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text style={{color: 'white'}}>{data}</Text></View>}
+            renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent'}}>{data}</Text></View>}
             />
           </View>
         );
