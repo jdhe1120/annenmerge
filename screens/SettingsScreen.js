@@ -27,6 +27,10 @@ const firebaseConfig =
 const devWidth = Dimensions.get('window').width;
 const devHeight = Dimensions.get('window').height;
 
+console.disableYellowBox = true;
+
+
+
 export default class SettingsScreen extends React.Component {
 
   constructor(props)
@@ -39,7 +43,7 @@ export default class SettingsScreen extends React.Component {
     };
   }
 
-  componentWillMount()
+  componentDidMount()
   {
     var settingsComp = this;
     settingsComp.getUserInfo();
@@ -95,7 +99,7 @@ export default class SettingsScreen extends React.Component {
     );
   }
 
-  async getUserInfo()
+ async getUserInfo()
   {
     var settingsComp = this;
     try
