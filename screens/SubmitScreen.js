@@ -27,19 +27,22 @@ import { Facebook } from 'exponent';
 import PubSub from 'pubsub-js';
 import RootNavigation from '../navigation/RootNavigation'
 
+// stores dimensions of user's screen
 const devWidth = Dimensions.get('window').width;
 const devHeight = Dimensions.get('window').height;
-  
+
+// decorator needed to call a switch in tab
 @withNavigation
 export default class SubmitScreen extends React.Component
 {
   constructor(props)
   {
     super(props);
+    // text in input box; will store table number
     this.state = {text: ''};
   }
 
-  /* Submits input on press */
+  // submits input on press
   async _handlePress()
   {
     try
@@ -107,35 +110,29 @@ export default class SubmitScreen extends React.Component
     PubSub.publish('newtablesubmit', true);
   }
 
+  // displays submit form and button
   render()
   {
     return (
       <View>
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.centerChildren}>
           <Image
-            style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
+            style={styles.background}
             source={require('../assets/images/metalBG.jpg')}
           />
           <Image
-            style={{position: 'absolute', top: 0.15*592, left: 0.5*devWidth-0.8*360/2, width: 0.8*360, resizeMode: 'contain'}}
+            style={styles.form}
             source={require('../assets/images/submit-form.png')}
           />
           <TextInput
             underlineColorAndroid={'transparent'}
-            style={{position: 'absolute', top: 230, left: 0.5*devWidth-360*0.3/2, height: 0.1*592, borderColor: 'transparent', width: 360*0.3, textAlign:'center'}}
+            style={styles.textField}
             onChangeText={(text) => this.setState({text})}
             value={this.state.text}
             selectTextOnFocus={true}
           />
-          <TouchableOpacity onPress={() => this._handlePress()} style={{
-              position: 'absolute',
-              left: 0.5*devWidth-0.5*360/2,
-              width: 0.5*360, 
-              height: 0.5*360*76/265, 
-              top: 0.55*592,
-              alignItems: 'center', 
-              justifyContent: 'center'}}>
-            <Image style={{width: 0.5*360, height: 0.5*360*76/265, resizeMode: 'contain'}}
+          <TouchableOpacity onPress={() => this._handlePress()} style={styles.submitContainer}>
+            <Image style={styles.submitButton}
               source={require('../assets/images/submit-metal.png')}
             />
           </TouchableOpacity>
@@ -146,9 +143,44 @@ export default class SubmitScreen extends React.Component
 }
 
 const styles = StyleSheet.create({
-  container:
-  {
-    flex: 1,
-    paddingTop: 15,
+  centerChildren: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  background: {
+    position: 'absolute',
+    width: devWidth,
+    height: devHeight,
+    resizeMode: 'cover',
+  },
+  form: {
+    position: 'absolute',
+    top: 0.15*592,
+    left: 0.5*devWidth-0.8*360/2,
+    width: 0.8*360,
+    resizeMode: 'contain',
+  },
+  textField: {
+    position: 'absolute',
+    top: 230,
+    left: 0.5*devWidth-360*0.3/2,
+    height: 0.1*592,
+    borderColor: 'transparent',
+    width: 360*0.3,
+    textAlign:'center',
+  },
+  submitContainer: {
+    position: 'absolute',
+    left: 0.5*devWidth-0.5*360/2,
+    width: 0.5*360,
+    height: 0.5*360*76/265,
+    top: 0.55*592,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitButton: {
+    width: 0.5*360,
+    height: 0.5*360*76/265,
+    resizeMode: 'contain',
   },
 });

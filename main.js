@@ -18,6 +18,7 @@ import {
 import Router from './navigation/Router';
 import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
+// disables console warnings to enhance user experience
 console.disableYellowBox = true;
 
 class AppContainer extends React.Component {
@@ -55,10 +56,11 @@ class AppContainer extends React.Component {
     if (this.state.appIsReady) {
       return (
         <View style={styles.container}>
+          {/* initializes app routing */}
           <NavigationProvider router={Router}>
-            <StackNavigation 
-              id="root" 
-              initialRoute={Router.getRoute('rootNavigation')} 
+            <StackNavigation
+              id="root"
+              initialRoute={Router.getRoute('rootNavigation')}
             />
           </NavigationProvider>
 
@@ -66,7 +68,9 @@ class AppContainer extends React.Component {
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
         </View>
       );
-    } else {
+    }
+    // shows loading screen if app is not ready
+    else {
       return (
         <Exponent.Components.AppLoading />
       );

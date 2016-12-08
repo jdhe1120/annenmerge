@@ -15,7 +15,7 @@ import {
 import PubSub from 'pubsub-js';
 import * as firebase from 'firebase';
 
-{/* Initialize Firebase */}
+// links apps with Firebase database
 const firebaseConfig =
 {
   apiKey: "***REMOVED***",
@@ -24,18 +24,19 @@ const firebaseConfig =
   storageBucket: "gs://annenmerge-94bee.appspot.com",
 };
 
+// store dimensions of user's screen
 const devWidth = Dimensions.get('window').width;
 const devHeight = Dimensions.get('window').height;
 
+// disables warnings to enhance user experience
 console.disableYellowBox = true;
-
-
 
 export default class SettingsScreen extends React.Component {
 
   constructor(props)
   {
     super(props);
+    // displayed if user has not yet checked in
     this.state =
     {
       welcomeText: "Welcome!",
@@ -72,25 +73,26 @@ export default class SettingsScreen extends React.Component {
     }
     var token = PubSub.subscribe('newtablesubmit', settingsTableSubscriber);
 
+    // displays user info and sign-out button
     return (
       <View>
         <View>
           <Image
-            style={{position: 'absolute', width: devWidth, height: devHeight, resizeMode: 'cover'}}
+            style={styles.background}
             source={require('../assets/images/metalBG.jpg')}
           />
         </View>
-        <View style={{alignItems: 'center', marginTop: 50}}>
-          <Text style={{fontSize: 20, fontStyle: 'italic', color: 'white', backgroundColor: 'transparent'}}>
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeText}>
             {this.state.welcomeText}
           </Text>
           <View style={{height: 5}}></View>
-          <Text style={{color: 'white', backgroundColor: 'transparent'}}>
+          <Text style={styles.tableText}>
             {this.state.tableText}
           </Text>
-          <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, marginTop: 25}}>
+          <TouchableOpacity onPress={this._logOutWithFacebook} style={styles.signOutContainer}>
             <Image
-              style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, resizeMode: 'contain'}}
+              style={styles.signOutButton}
               source={require('../assets/images/signout-metal.png')}
             />
           </TouchableOpacity>
@@ -99,6 +101,7 @@ export default class SettingsScreen extends React.Component {
     );
   }
 
+ // retrieves user's name and table number from Firebase
  async getUserInfo()
   {
     var settingsComp = this;
@@ -153,7 +156,34 @@ export default class SettingsScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  background: {
+    position: 'absolute',
+    width: devWidth,
+    height: devHeight,
+    resizeMode: 'cover',
+  },
+  welcomeContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontStyle: 'italic',
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
+  tableText: {
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
+  signOutContainer: {
+    width: 0.5*devWidth,
+    height: 0.5*devWidth*76/265,
+    marginTop: 25,
+  },
+  signOutButton: {
+    width: 0.5*devWidth,
+    height: 0.5*devWidth*76/265,
+    resizeMode: 'contain',
   },
 });

@@ -30,6 +30,7 @@ export default class RootNavigation extends React.Component {
     }
 
   render() {
+    // hides navigation bar when user is logged out
   	var navComp = this;
     var navSub = function(msg, data)
     {
@@ -97,6 +98,7 @@ export default class RootNavigation extends React.Component {
   	}
   }
 
+  // displays different icon when tab is selected
   _renderIcon(name, isSelected) {
     return (
       <FontAwesome

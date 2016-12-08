@@ -1,13 +1,12 @@
 Design.txt
 
-
-The first major design decision we made was to use Exponent to create the mobile app. Because Exponent uses React Native (built on Javascript), our app is available on both Android and iOS. Covering both sides of the app market allows us to reach nearly every student passing through Annenberg.
-
-
-After we decided to use Exponent, we decided that it would make the most sense to integrate Facebook authorization into our app. We wouldn‚Äôt want everyone‚Äôs exact location in Annenberg to be shown‚Äîthis could lead some people to not want to use the app if they don‚Äôt like that anyone can just see where they‚Äôre sitting and when they check in. Instead, by using Facebook integration, we could have it so that users only see the locations of their Facebook friends. 
+We decided to use Exponent to create the mobile app. Because Exponent uses React Native (built on Javascript), our app is available on both Android and iOS. Covering both sides of the app market allows us to reach nearly every student passing through Annenberg.
 
 
-With Exponent decided and Facebook authorization data, our decisions essentially came down to the following parts:
+After choosing to use Exponent, we decided that it would make the most sense to integrate Facebook authorization into our app. We wouldnít want everyoneís exact location in Annenberg to be shown ó most people would not appreciate the invasion of privacy. Instead, by using Facebook integration, we decided that users should only see the locations of their Facebook friends. 
+
+
+With Exponent and Facebook authorization data set, our decisions were dictated by the following questions:
 
 
 1. How will we store the data?
@@ -18,7 +17,7 @@ With Exponent decided and Facebook authorization data, our decisions essentially
 1. How will we store the data?
 
 
-We store data by using Google Firebase. By using the database feature in Firebase, we had the ability to store key value pairs online. We decided what would make the most sense would be to store users data by their FB unique user id. The corresponding data for each unique user id would consist of the person‚Äôs name, table number, and the time they submitted their table number. Details on how and when we do the storage and retrieval of data will be explained below when going through each individual screen.
+We store data by using Google Firebase. By using the database feature in Firebase, we had the ability to store key value pairs online. We decided what would make the most sense would be to store users data by their FB unique user id. The corresponding data for each unique user id would consist of the personís name, table number, and the time they submitted their table number. Details on how and when we do the storage and retrieval of data will be explained below when going through each individual screen.
 
 
 2. What should the app look like when not logged in?
@@ -30,13 +29,15 @@ A simple login screen with the logo but with no further information without logg
 3. What should the app look like when the user is logged in?
 
 
-The app should have three main parts. First, it should show where the user‚Äôs Facebook friends are sitting. Next, it should have a screen for users to submit the table they‚Äôre sitting at. Finally, there should be a screen just with more information about the app.
+The app should have three main parts. First, it should show where the userís Facebook friends are sitting. Next, it should have a screen for users to submit their table number. Finally, there should be a screen with more information about the user/app.
 
 
-	a. HomeScreen
-		i. When the user logs in, we receive a Facebook token for the user. By using the FB graph API, we can use the provided Facebook token in order to get the list of the user‚Äôs friends who also use Annenmerge. More specifically, we can get the friends‚Äô FB user IDs. Thus, with the user IDs as keys, we then check the Firebase database to find out the name, table number, and time checked in for each of the user‚Äôs friends. This is displayed immediately on the homescreen after a user logs in.
-		ii. Note: during this time, we also store the user‚Äôs own FB data (namely, FB id and the user‚Äôs name) and put it into Async Storage to take note of the fact that this specific person has logged in. This is necessary for other parts of the app.
-	b. SubmitScreen
-		i. From the point that the user has logged in onwards, the user can navigate between different screens with the tab navigation bar at the bottom. On the SubmitScreen, the user can submit the table number they are sitting it. All the user needs to do is type in the table number, such as ‚ÄúA3‚Äù, and click submit. If the user types an incorrect table number, they will receive an error and nothing will be submitted. However, if the format is corrected, then using the user‚Äôs data (stored in the AsyncStorage) we use the user‚Äôs FB id as the key and submit into firebase the user‚Äôs submitted table number, the current time, and the user‚Äôs name.
-	c. SettingsScreen
-		i. This screen welcomes the user with his/her name and current table number. It also includes a logout function. The logout function will broadcast a message using the PubSub feature for all the components to clear out their data and restore the default values. This ensures that a new user logging in will not accidentally get the old user‚Äôs data.
+a. HomeScreen
+When the user logs in, we receive a Facebook token for the user. By using the FB graph API, we can use the provided Facebook token in order to get the list of the userís friends who also use Annenmerge. More specifically, we can get the friendsí FB user IDs. With the user IDs as keys, we then check the Firebase database to retrieve the name, table number, and time checked in for each of the userís friends. This is displayed immediately on the homescreen after a user logs in.
+Note: during this time, we also store the userís own FB data (namely, FB id and the userís name) and put it into Async Storage to remember (across JS files) that the current user has logged in. This is necessary for other parts of the app.
+
+b. SubmitScreen
+After the user logs in, he/she can navigate between different screens with the tab navigation bar at the bottom. On the SubmitScreen, the user can submit their table number. All the user needs to do is type in the table number, such as ìA3î, and click submit. If the user enters an incorrect table number, they will receive an error and nothing will be submitted. However, if the format is correct, then using the userís data (stored in the AsyncStorage) we set the userís FB id as the key and push to firebase the userís submitted table number, the current time, and the userís name.
+
+c. SettingsScreen
+This screen welcomes the user with his/her name and current table number. It also includes a logout function. Using PubSub, the function broadcasts a message for all of the components to clear out their data and revert to the default values. This ensures that a new user logging in will not accidentally keep the old userís data.
