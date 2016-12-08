@@ -84,14 +84,12 @@ export default class HomeScreen extends React.Component {
   render() {
 
     var homecomp = this;
-    console.log(devHeight);
-    console.log(devWidth);
     var homeSubscriber = function(msg, data)
     {
       if (!data)
       {
         console.log("user has now logged out");
-        homecomp.setState({loggedIn: false});
+        homecomp.setState({loggedIn: false, fbfrienddata: "", objectdisplaydata: {}, dataSource: homecomp.ds.cloneWithRows(['Loading...'])});
         homecomp.props.navigation.performAction(({ tabs, stacks }) => {
           tabs('main').jumpToTab('home');
         });
