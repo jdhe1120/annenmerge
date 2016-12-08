@@ -165,6 +165,7 @@ export default class HomeScreen extends React.Component {
                   finaldisplaydata.push(objectcopy[x][0] + " - " + objectcopy[x][1] + " - " + objectcopy[x][4] + "m ago");
                 }
                 friendsExist = true;
+                finaldisplaydata.sort();
                 homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
             }
