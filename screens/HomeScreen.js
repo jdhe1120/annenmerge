@@ -84,7 +84,8 @@ export default class HomeScreen extends React.Component {
   render() {
 
     var homecomp = this;
-
+    console.log(devHeight);
+    console.log(devWidth);
     var homeSubscriber = function(msg, data)
     {
       if (!data)
@@ -197,7 +198,7 @@ export default class HomeScreen extends React.Component {
             <ListView
             style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
             dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent'}}>{data}</Text></View>}
+            renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent', fontWeight: '500', lineHeight: 20}}>{data}</Text></View>}
             />
           </View>
         );

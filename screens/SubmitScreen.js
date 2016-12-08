@@ -29,7 +29,7 @@ import RootNavigation from '../navigation/RootNavigation'
 
 const devWidth = Dimensions.get('window').width;
 const devHeight = Dimensions.get('window').height;
-
+  
 @withNavigation
 export default class SubmitScreen extends React.Component
 {
@@ -117,25 +117,25 @@ export default class SubmitScreen extends React.Component
             source={require('../assets/images/metalBG.jpg')}
           />
           <Image
-            style={{position: 'absolute', top: 0.15*devHeight, left: 0.1*devWidth, width: 0.8*devWidth, resizeMode: 'contain'}}
+            style={{position: 'absolute', top: 0.15*592, left: 0.5*devWidth-0.8*360/2, width: 0.8*360, resizeMode: 'contain'}}
             source={require('../assets/images/submit-form.png')}
           />
           <TextInput
             underlineColorAndroid={'transparent'}
-            style={{position: 'absolute', top: 0.41*devHeight, left: 0.35*devWidth, height: 35, borderColor: 'transparent', width: devWidth*0.3, textAlign:'center'}}
+            style={{position: 'absolute', top: 230, left: 0.5*devWidth-360*0.3/2, height: 0.1*592, borderColor: 'transparent', width: 360*0.3, textAlign:'center'}}
             onChangeText={(text) => this.setState({text})}
             value={this.state.text}
             selectTextOnFocus={true}
           />
           <TouchableOpacity onPress={() => this._handlePress()} style={{
               position: 'absolute',
-              left: 0.25*devWidth,
-              width: 0.5*devWidth, 
-              height: 0.5*devWidth*76/265, 
-              top: 0.55*devHeight,
+              left: 0.5*devWidth-0.5*360/2,
+              width: 0.5*360, 
+              height: 0.5*360*76/265, 
+              top: 0.55*592,
               alignItems: 'center', 
               justifyContent: 'center'}}>
-            <Image style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, resizeMode: 'contain'}}
+            <Image style={{width: 0.5*360, height: 0.5*360*76/265, resizeMode: 'contain'}}
               source={require('../assets/images/submit-metal.png')}
             />
           </TouchableOpacity>
