@@ -195,11 +195,17 @@ export default class HomeScreen extends React.Component {
                 source={require('../assets/images/metalBG.jpg')}
               />
             </View>
-            <ListView
-            style={{marginLeft: 0.025*devWidth, marginTop: statusBarHeight}}
-            dataSource={this.state.dataSource}
-            renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent', fontWeight: '500', lineHeight: 20}}>{data}</Text></View>}
-            />
+            <View style={{marginLeft: 0.035*devWidth, marginTop: statusBarHeight}}>
+              <Text style={{fontSize: 30, color: 'white', backgroundColor: 'transparent', textAlign: 'center', fontWeight: '500'}}>
+                Friends
+              </Text>
+              <View style={{height: 20}}></View>
+              <ListView
+              style={{}}
+              dataSource={this.state.dataSource}
+              renderRow={(data) => <View><Text style={{color: 'white', backgroundColor: 'transparent', fontWeight: '500', lineHeight: 17}}>{data}</Text></View>}
+              />
+            </View>
           </View>
         );
       }
