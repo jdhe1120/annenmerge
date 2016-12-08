@@ -127,7 +127,7 @@ export default class SettingsScreen extends React.Component {
         {
           var tableNumber = snapshot.val().tablenumber;
           console.log(tableNumber);
-          settingsComp.setState({welcomeText: "Welcome back, "+firstName+"!", tableText: "Your table number is "+tableNumber});
+          settingsComp.setState({welcomeText: "Welcome back, "+firstName+"!", tableText: "Your table number is "+tableNumber+"."});
         }
         catch (error)
         {
