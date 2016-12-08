@@ -84,10 +84,10 @@ export default class SettingsScreen extends React.Component {
           <Text style={{color: 'white'}}>
             {this.state.tableText}.
           </Text>
-          <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, marginTop: 25}}>
+          <TouchableOpacity onPress={this._logOutWithFacebook} style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, marginTop: 25}}>
             <Image
-              style={{width: 0.75*devWidth, height: 0.75*devWidth*130/620, resizeMode: 'contain'}}
-              source={require('../assets/images/logout-button.png')}
+              style={{width: 0.5*devWidth, height: 0.5*devWidth*76/265, resizeMode: 'contain'}}
+              source={require('../assets/images/signout-metal.png')}
             />
           </TouchableOpacity>
         </View>
