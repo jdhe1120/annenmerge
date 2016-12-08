@@ -18,6 +18,8 @@ import {
 import Router from './navigation/Router';
 import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
+console.disableYellowBox = true;
+
 class AppContainer extends React.Component {
   state = {
     appIsReady: false,
