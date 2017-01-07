@@ -52,6 +52,7 @@ firebase.auth().onAuthStateChanged(
     if(user != null)
       {
         console.log("We are authenticated now!");
+        PubSub.publish('authentication', true);
       }
   });
 
@@ -70,6 +71,7 @@ export default class HomeScreen extends React.Component
       fbfrienddata: "",
       objectdisplaydata: {},
       dataSource: this.ds.cloneWithRows(['Loading...']),
+      authentication: false,
     };
   }
 
@@ -79,6 +81,11 @@ export default class HomeScreen extends React.Component
    * If log-in state doesn't change, update only when data changes.
    */
   shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.authentication !== this.state.authentication)
+    {
+      console.log("update HomeScreen as authentication has changed");
+      return true;
+    }
     if (nextState.loggedIn !== this.state.loggedIn)
     {
       console.log("update HomeScreen as loggedIn is now " + nextState.loggedIn);
@@ -86,6 +93,7 @@ export default class HomeScreen extends React.Component
     }
     else
     {
+      console.log("update HomeScreen as dataSource has changed");
       return JSON.stringify(nextState.dataSource) !== JSON.stringify(this.state.dataSource);
     }
   }
@@ -111,7 +119,20 @@ export default class HomeScreen extends React.Component
         });
       }
     }
+
   	var token = PubSub.subscribe('loggedin', homeSubscriber);
+
+    // listens for changes in authentication
+    var authSubscriber = function(msg, data)
+    {
+      // upon first authentication, reload screen
+      if (data)
+      {
+        homecomp.setState({authentication: true});
+      }
+    }
+
+    var tokentwo = PubSub.subscribe('authentication', authSubscriber);
 
     // displays logo and Facebook login button
     if (!this.state.loggedIn)
@@ -151,6 +172,7 @@ export default class HomeScreen extends React.Component
       // loops over each friend in the friend list
       for (var i = 0; i < jsonfbdata.length; i++)
       {
+        console.log("by now we MUST be Firebase authenticated already");
         // friend's Facebook ID
         var userId = jsonfbdata[i].id;
         if (firebase.auth().currentUser != null)
@@ -191,10 +213,12 @@ export default class HomeScreen extends React.Component
                 finaldisplaydata.sort();
                 homecomp.setState({objectdisplaydata: objectcopy, dataSource: homecomp.ds.cloneWithRows(finaldisplaydata)});
               }
+              console.log("found " + name);
             }
             catch (error)
             {
               console.log("One of the users has null data.");
+              console.log("this was the error: " + error);
             }
           });
         }
@@ -253,6 +277,7 @@ export default class HomeScreen extends React.Component
     });
 
     if (result.type === 'success') {
+      // pubsub in order to display the nav bar
       PubSub.publish('loggedin', true);
 
       // build Firebase credential with the Facebook access token.
@@ -267,7 +292,7 @@ export default class HomeScreen extends React.Component
       // fetch friend information from facebook
       let responseone = await fetch(`https://graph.facebook.com/me/friends?access_token=${result.token}`);
       let friendinfo = await responseone.json();
-      this.setState({loggedIn: true, fbfrienddata: JSON.stringify(friendinfo.data)});
+      this.setState({fbfrienddata: JSON.stringify(friendinfo.data), loggedIn: true});
 
       // fetch user fb id and corresponding data
       let responsetwo = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
