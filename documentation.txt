@@ -29,7 +29,7 @@ Since we are still in the process of getting our app on the App Store and the Pl
 	e. After running the app, feel free to change your security settings back!
 	f. Since you are most likely not friends with any current users of the app (freshman), you can login with the following information (the Annenmerge account that is friends with a couple of freshmen):
 		1. Email: annenmerge@gmail.com
-		2. Password: ***REMOVED***
+		2. Password: ***removed***
 		3. This information (along with the API keys, FB Secret Key, etc) is only available for grading purposes. It is not shared publicly. We would appreciate it if you also do not share it!
 		Alternatively, you may test this by asking one of your Facebook friends to log in to the app and then getting them to “check in” to an Annenberg table. Conversely, you can “check in” yourself to an Annenberg table and ask a friend to login and see where you are sitting.
 
