@@ -27,12 +27,13 @@ import PubSub from 'pubsub-js';
 import * as firebase from 'firebase';
 
 // links app to Firebase database
+// a new firebase configuration has been created and not included for security reasons
 const firebaseConfig =
 {
   apiKey: "",
-  authDomain: "annenmerge-94bee.firebaseapp.com",
-  databaseURL: "https://annenmerge-94bee.firebaseio.com/",
-  storageBucket: "gs://annenmerge-94bee.appspot.com",
+  authDomain: "",
+  databaseURL: "",
+  storageBucket: "",
 };
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
