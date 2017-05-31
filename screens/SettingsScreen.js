@@ -18,10 +18,10 @@ import * as firebase from 'firebase';
 // links apps with Firebase database
 const firebaseConfig =
 {
-  apiKey: "***REMOVED***",
-  authDomain: "annenmerge-94bee.firebaseapp.com",
-  databaseURL: "https://annenmerge-94bee.firebaseio.com/",
-  storageBucket: "gs://annenmerge-94bee.appspot.com",
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  storageBucket: "",
 };
 
 // store dimensions of user's screen
