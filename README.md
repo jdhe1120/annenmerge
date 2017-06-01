@@ -40,18 +40,18 @@ Here are the full steps:
 1. Download the Exponent XDE by following the instructions here (for the Desktop Development Tool) https://docs.getexponent.com/versions/v11.0.0/introduction/installation.html# 
 2. Download either the mobile app, andorid simulator, or iPhone simulator by following the instructions here (Mobile Client: Exponent for iOS and Android) https://docs.getexponent.com/versions/v11.0.0/introduction/installation.html#
 3. This is already on the website, but just in case
-	a. Mobile app is available for Android 4.4+ from the Play Store or for iOS 8+ from the App Store
-	b. iOS simulator requires Xcode
-	c. Android simulator requires Genymotion
+a. Mobile app is available for Android 4.4+ from the Play Store or for iOS 8+ from the App Store
+b. iOS simulator requires Xcode
+c. Android simulator requires Genymotion
 4. Download Node.js https://nodejs.org/en/ 
-	a. This is because our project utilizes npm, a package managing system that allows people to use open source libraries in their projects
+a. This is because our project utilizes npm, a package managing system that allows people to use open source libraries in their projects
 5. Mac users
-	a. Exponent notes that some Mac users experience issues without Watchman, which is used internally by React Native
-	b. https://facebook.github.io/watchman/docs/install.html 
+a. Exponent notes that some Mac users experience issues without Watchman, which is used internally by React Native
+b. https://facebook.github.io/watchman/docs/install.html 
 6. Now that installation of the software to run the project is complete, download this entire folder.
 7. Navigate to your local copy of this folder in the command line interface and run “npm install”. This will install all the packages specified in the package.json file, which are required to make the project run.
 8. Open Exponent XDE on your computer and click file and open project. Navigate to the your local copy of this folder and select it to open.
 9. Now, a link will appear at the top of Exponent XDE. 
-	a. If using your mobile device, open the Exponent mobile app and type in the link. You will now gain access to the app.
-	b. If using an Android simulator, click “device” at the upper right and click open with Android simulator.
-	c. If using an iOS simulator, click “device” at the upper right and click open with iOS simulator.
+a. If using your mobile device, open the Exponent mobile app and type in the link. You will now gain access to the app.
+b. If using an Android simulator, click “device” at the upper right and click open with Android simulator.
+c. If using an iOS simulator, click “device” at the upper right and click open with iOS simulator.
